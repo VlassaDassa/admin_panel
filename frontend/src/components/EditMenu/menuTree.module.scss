@@ -1,0 +1,165 @@
+@import './../../assets/styles/variables';
+
+
+
+
+
+
+.menuTree {
+    display: flex;
+    flex-direction: column;
+}
+
+.square, .subSquare, .subSubSquare {
+    border-left: 2px solid $accent-color;
+    padding-left: 25px;
+    align-self: flex-start;
+}
+
+
+.square {
+    padding-top: 70px;
+}
+
+.square:first-child {
+    padding-top:0px;
+}
+
+
+.subSquare {
+    margin-left: 100px;
+
+    .subSquare {
+        margin-left: -27px;
+    }
+
+    .nodeWithLink {
+        bottom: 30px;
+    }
+
+    .node + .node {
+        margin-top: 50px;
+    }
+}
+
+
+.subSubSquare {
+    margin-left: 100px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+
+    .node {
+        bottom: 30px;
+    }
+}
+
+.subSquare:last-child {
+    margin-top: 50px;
+}
+
+
+.node,
+.imgContainer {
+    position: relative;
+    bottom: 12px;
+    
+    &:last-child {
+        bottom: -12px;
+    }
+}
+
+.lonelyNode {
+    top: -9px;
+}
+
+.imgContainer {
+    display: inline-block;
+    &:last-child {
+        bottom: -4.5px;
+    }
+} 
+
+.node::before,
+.imgContainer::before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px; 
+    height: 2px; 
+    background-color: $accent-color;
+}
+
+.imgContainer::before {
+    top: 90%;
+}
+
+.plusIcon {
+    display: block;
+    transition: transform ease-in-out 0.1s;
+
+    &:hover {
+        transform: scale(1.05) rotate(5deg);
+        cursor: pointer;
+    }
+
+    &:active {
+        transform: scale(0.95) rotate(-5deg);
+    }
+}
+
+
+.mainNode, .node {
+    font-weight: $medium;
+}
+
+.mainNode {
+    color: $text-color;
+    margin-bottom: 50px;
+
+    &:last-child {
+        margin-top: 50px;
+    }
+}
+
+
+.linkContainer {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    font-weight: $light;
+    color: $light-text-hover;
+    margin-top: 10px;
+}
+
+
+.nodeLink {
+    color: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+
+    transition: color ease-in-out 0.3s;
+
+    &:focus {
+        color: $accent-color;
+        font-weight: $regular;
+    }
+}
+
+
+.nodeText {
+    font-weight: inherit;
+    font-size: inherit;
+    color: inherit;
+    width: 500px;
+
+    transition: color ease-in-out 0.3s;
+
+    &:focus {
+        color: $accent-color;
+    }
+}
+
+

@@ -1,0 +1,35 @@
+@import './../../../assets/styles/variables';
+
+
+
+
+
+.header {
+    margin-top: 50px;
+}
+
+.headerNav,
+.navWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navWrapper {
+    column-gap: 15px;
+    transition: color ease-in-out 0.2s;
+
+    &:hover {
+        color: $accent-color;
+    }
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: $semi_bold;
+    transition: opacity ease-in-out 0.1s;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}

@@ -1,0 +1,28 @@
+@import './../../../../assets/styles/variables';
+
+.itemWrapper {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+
+    &:hover {
+        .displayName {
+            color: $accent-color;
+        }
+
+        cursor: pointer;
+    }
+}
+
+.displayName {
+    font-size: 20px;
+    font-weight: $medium;
+    line-height: 1.3;
+
+    transition: color ease-in-out 0.1s;
+}
+
+
+.active {
+    color: $accent-color;
+}

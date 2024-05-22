@@ -1,0 +1,60 @@
+/* Colors */
+$base-color: white;
+$secondary-color: #F6F6F6;
+$text-color: #2F2F2F;
+$light-text-color: #2F2F2F;
+$accent-color: #2F82FF;
+$hover-accent: #4992ff;
+$selected-accent-color: #226AD6;
+$border-bottom: rgb(47, 47, 47, 0.5);
+$light-text-hover: #a8a7a7;
+$pale-text: rgb(47, 47, 47, 0.72);
+$hover-light: rgb(215, 215, 215);
+$highlight: beige;
+
+$opacity-gerb: 1;
+$letter-spacing: unset;
+$font-type: 'Montserrat', sans-serif;
+$hide-image: 0;
+
+[data-letter-spacing="medium"] {
+    $letter-spacing: 5px;
+}
+
+[data-letter-spacing="big"] {
+    $letter-spacing: 10px;
+}
+
+[data-font-type="serif"] {
+    $font-type: 'Times New Roman', Times, serif;
+}
+
+[data-hide-image="hide"] {
+    $hide-image: 1;
+}
+
+[data-theme='dark'] {
+    $base-color: #212121;
+    $secondary-color: #2F2F2F;
+    $text-color: #C9C9C9;
+    $accent-color: #4744C6;
+    $hover-accent: #5855E4;
+    $light-text-color: #C9C9C9;
+    $selected-accent-color: #2D2BAE;
+    $border-bottom: rgb(158, 158, 158, 0.5);
+    $light-text-hover: #a8a7a7;
+    $pale-text: #f6f6f691;
+    $highlight: #353535;
+    $opacity-gerb: 0.7;
+}
+
+/* Font weight */
+$thin: 100;
+$extra_ligth: 200;
+$light: 300;
+$regular: 400;
+$medium: 500;
+$semi_bold: 600;
+$bold: 700;
+$exta_bold: 800;
+$black: 900;

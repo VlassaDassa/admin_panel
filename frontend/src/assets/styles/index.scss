@@ -1,0 +1,91 @@
+@import './variables.scss';
+
+
+
+
+body {
+    background: $base_color;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    color: $text-color;
+}
+
+.container {
+    max-width: 1440px;
+    min-width: 320px;
+
+    padding: 0 125px;
+    margin: 0 auto;
+}
+
+
+.contentWrapper {
+    display: flex;
+    justify-content: space-between;
+    
+    column-gap: 100px;
+    margin-top: 100px;
+}
+
+
+.page {
+    height: 75vh;
+    flex-grow: 1;
+}
+
+
+.page--editMenu {
+    display: flex;
+    justify-content: center;
+
+    overflow: hidden;
+    overflow-y: scroll;
+    padding: 50px;
+    padding-left: 300px;
+    height: 50vh;
+    
+    cursor:grab;
+}
+
+
+.page--editMenu:active {
+    cursor: grabbing;
+}
+
+
+.page--editMenu::-webkit-scrollbar {
+    width: 0;
+}
+
+::-webkit-scrollbar {
+    width: 0.5em;
+  }
+  
+::-webkit-scrollbar-thumb {
+    background-color: #82b2fc; 
+    border-radius: 4px; 
+}
+  
+::-webkit-scrollbar-track {
+    background-color: #f1f1f1; 
+}
+
+
+
+
+@media (max-width: 1450px) {
+    .container {
+        max-width: 1440px;
+        padding: 0 50px;
+        margin: 0 auto;
+    }
+}
+
+
+@media (max-width: 1100px) {
+    .container {
+        max-width: 1440px;
+        padding: 0 25px;
+        margin: 0 auto;
+    }
+}
