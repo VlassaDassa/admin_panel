@@ -2,9 +2,6 @@
 
 
 
-
-
-
 .menuTree {
     display: flex;
     flex-direction: column;
@@ -16,6 +13,13 @@
     align-self: flex-start;
 }
 
+.plusContainer {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+
+    margin-top: 10px;
+}
 
 .square {
     padding-top: 70px;
@@ -25,59 +29,58 @@
     padding-top:0px;
 }
 
-
 .subSquare {
     margin-left: 100px;
+    
 
     .subSquare {
         margin-left: -27px;
     }
 
     .nodeWithLink {
-        bottom: 30px;
+        bottom: 48px;
     }
 
     .node + .node {
         margin-top: 50px;
     }
-}
 
+    &:last-child {
+        margin-top: 50px;
+    }
+}
 
 .subSubSquare {
     margin-left: 100px;
     margin-top: 50px;
-    margin-bottom: 50px;
+    margin-bottom: 100px;
 
     .node {
-        bottom: 30px;
+        bottom: 48px;
+    }
+
+    .plusLvlIcon {
+        display: none;
     }
 }
 
-.subSquare:last-child {
-    margin-top: 50px;
-}
+
+.mainNode.nodeWithLink {
+    &:first-child {
+        margin-top: -60px;
+    }
+}   
 
 
 .node,
 .imgContainer {
     position: relative;
-    bottom: 12px;
+    bottom: 30px;
     
     &:last-child {
         bottom: -12px;
     }
 }
-
-.lonelyNode {
-    top: -9px;
-}
-
-.imgContainer {
-    display: inline-block;
-    &:last-child {
-        bottom: -4.5px;
-    }
-} 
 
 .node::before,
 .imgContainer::before {
@@ -92,11 +95,19 @@
     background-color: $accent-color;
 }
 
-.imgContainer::before {
-    top: 90%;
-}
+.imgContainer {
+    display: inline-block;
+    
+    &:last-child {
+        bottom: -4.5px;
+    }
 
-.plusIcon {
+    &::before {
+        top: 90%;
+    }
+} 
+
+.plusIcon, .minusIcon {
     display: block;
     transition: transform ease-in-out 0.1s;
 
@@ -111,6 +122,11 @@
 }
 
 
+.lonelyNode {
+    top: -9px;
+}
+
+
 .mainNode, .node {
     font-weight: $medium;
 }
@@ -119,11 +135,13 @@
     color: $text-color;
     margin-bottom: 50px;
 
+    
     &:last-child {
         margin-top: 50px;
     }
-}
 
+
+}
 
 .linkContainer {
     display: flex;
@@ -133,7 +151,6 @@
     color: $light-text-hover;
     margin-top: 10px;
 }
-
 
 .nodeLink {
     color: inherit;
@@ -148,12 +165,11 @@
     }
 }
 
-
 .nodeText {
     font-weight: inherit;
     font-size: inherit;
     color: inherit;
-    width: 500px;
+    width: 1000px;
 
     transition: color ease-in-out 0.3s;
 
@@ -163,3 +179,6 @@
 }
 
 
+.newNode {
+    color: rgb(246, 93, 93);
+}

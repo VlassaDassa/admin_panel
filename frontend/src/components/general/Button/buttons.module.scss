@@ -1,0 +1,22 @@
+@import './../../../assets/styles/variables';
+
+
+
+.button {
+    background: $accent-color;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+
+    transition: opacity ease-in-out 0.2s;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.saveMenu {
+    position: absolute;
+    left: 80%;
+    top: 0;
+}

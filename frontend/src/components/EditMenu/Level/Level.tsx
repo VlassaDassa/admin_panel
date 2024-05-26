@@ -7,13 +7,21 @@ import styles from './../menuTree.module.scss';
 
 interface MultiComponentProps {
     children: ReactNode;
+    level: number;
 }
 
-const SecondLvl: FC<MultiComponentProps> = ({ children }) => {
+const Level: FC<MultiComponentProps> = ({ children, level }) => {
     const childrenArray = React.Children.toArray(children);
+    
+    const classNameLevel: { [key in MultiComponentProps['level']]: string } = {
+        1: 'square',
+        2: 'subSquare',
+        3: 'subSubSquare',
+    };
+
 
     return (
-        <div className={styles.subSquare}>
+        <div className={styles[classNameLevel[level]]}>
             {childrenArray.map((child, index) => (
                 <React.Fragment key={index}>
                     {child}
@@ -23,8 +31,4 @@ const SecondLvl: FC<MultiComponentProps> = ({ children }) => {
     );
 };
 
-export default SecondLvl;
-
-
-
-// Исключительно ради читаемости FirstLVL, SecondLvl и ThirdLvl одинаковые
+export default Level;
