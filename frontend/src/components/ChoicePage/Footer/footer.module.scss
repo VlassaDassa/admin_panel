@@ -1,0 +1,16 @@
+@import './../../../assets/styles/variables';
+
+
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 20px;
+}
+
+.pgnButtons {
+    display: flex;
+    column-gap: 10px;
+}

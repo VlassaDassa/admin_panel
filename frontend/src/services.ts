@@ -32,7 +32,6 @@ class MenuManager {
         return this.data;
     }
 
-
     findAndModifyNode(nodeName: string, nodeText: string, modifyFn: (node: NavigationField) => void): NavigationField[] {
         const traverseAndModify = (nodes: NavigationField[]): boolean => {
             let found = false;
@@ -53,6 +52,24 @@ class MenuManager {
 
         traverseAndModify(this.data);
         return this.data;
+    }
+
+    getNodesWithLink = () => {
+        let result: NavigationField[] = []
+    
+        const recurs = (fields: NavigationField[]) => {
+            fields.forEach((fields) => {
+                if (fields.link) {
+                    result.push(fields)
+                }
+                else if (fields.fields) {
+                    recurs(fields.fields)
+                }
+            })
+        }
+        recurs(this.data)
+        this.data = result
+        return this.data
     }
 }
 

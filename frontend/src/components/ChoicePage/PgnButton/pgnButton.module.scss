@@ -1,0 +1,18 @@
+@import './../../../assets/styles/variables';
+
+
+
+.left {
+    transform: scaleX(-1);
+}
+
+.pgnButton {
+    height: 40px;
+    cursor: pointer;
+
+    transition: opacity ease-in-out 0.1s;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
