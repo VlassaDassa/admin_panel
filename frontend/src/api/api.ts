@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { NavigationField } from '../types';
+import { NavigationField, PageObjects } from '../types';
 
 
 
@@ -35,3 +35,16 @@ export const updateMenu = async (data: NavigationField[]): Promise<Boolean> => {
         throw error;
     }
 };
+
+
+
+export const getPage = async (pageName: string): Promise<PageObjects[]> => {
+    try {
+        const response: AxiosResponse<PageObjects[]> = await axios.get(BASE_URL + 'page/' + pageName)
+        return response.data
+    }
+    catch (error) {
+        console.error('Error fetching data: ', error)
+        throw error;
+    }
+} 

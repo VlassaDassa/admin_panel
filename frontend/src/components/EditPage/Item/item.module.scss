@@ -1,0 +1,89 @@
+@import './../../../assets/styles/variables';
+
+
+.dragHandle {
+    left: -35px;
+    position: absolute;
+
+    transition: background-color ease-in-out 0.1s;
+
+    &:hover {
+        background-color: rgb(221, 221, 221);
+    }
+}
+
+.settingsIco {
+    right: -40px;
+    position: absolute;
+    
+    cursor: pointer;
+}
+
+.dragHandle,
+.settingsIco {
+    transition: background-color ease-in-out 0.1s;
+    padding: 10px;
+    border-radius: 5px;
+    display: none;
+
+    &:hover {
+        background-color: rgb(221, 221, 221);
+    }
+}
+
+
+.draggableBlock {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    &:hover {
+        background: #b7e1ff;
+        
+        .dragHandle,
+        .settingsIco {
+            display: block;
+        }
+    }
+
+    &:last-child {
+        margin-bottom: 100px;
+    }
+}
+
+
+.addStr {
+    cursor: pointer;
+
+    transition: opacity ease-in-out 0.1s;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+
+.Paragraph + .Paragraph{
+    margin-top: 20px;
+}
+
+.Title {
+    margin-bottom: 30px;
+}
+
+.Strong {
+    margin-bottom: 20px;
+}
+
+
+.Image {
+    margin: 20px 0;
+}
+
+
+@media (max-width: 1024px) {
+    .Paragraph + .Paragraph {
+        margin-top: 10px;
+    }
+}

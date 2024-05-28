@@ -4,12 +4,11 @@ from django.conf import settings
 
 from dotenv import load_dotenv
 from ftplib import FTP
-
-
+import requests
+from bs4 import BeautifulSoup
 
 
 load_dotenv()
-
 
 
 
@@ -113,3 +112,57 @@ class FileManager:
 
         with open(self.local_path_to_js, 'w', encoding='windows-1251') as file:
             file.write(content)
+
+
+class PageManager:
+    def __init__(self, *args, **kwargs):
+        self.baseUrl = kwargs.get('baseUrl', settings.MAIN_SERVER_URL)
+
+    def _getPage(self, pageName):
+        url = f'{self.baseUrl}/{pageName}'
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            html_content = response.text
+            soup = BeautifulSoup(html_content, 'html.parser')
+            return soup
+
+        raise ConnectionError     
+
+    def getPageObject(self, pageName):
+        page = self._getPage(pageName)
+        news_element = page.find('main').find('div', class_='container')
+
+        if news_element:
+            def parse_element(element):
+                obj = {
+                    'type': f"<{element.name}>",
+                    'class': element.get('class', [None])[0]
+                }
+
+                # Определение полей 
+                if not list(element.find_all(recursive=False)):
+                    obj['text'] = element.get_text(strip=True)
+                if element.name == 'a':
+                    obj['text'] = element.get_text(strip=True)
+                    obj['href'] = element.get('href')
+                elif element.name == 'img':
+                    obj['alt'] = element.get('alt')
+                    obj['src'] = element.get('src')
+                    del obj['text']
+                elif (element.name in ['h1', 'h2', 'strong']) and (not element.children):
+                    obj['text'] = element.get_text(strip=True)
+                
+                # Формирование дочерних узлов
+                children = [parse_element(child) for child in element.find_all(recursive=False) if child.name]
+                if children:
+                    obj['children'] = children
+
+                return obj
+
+            exclude_nodes = ['br', 'div']
+            parsed_elements = [parse_element(child) for child in news_element.find_all(recursive=False) if child.name not in exclude_nodes]
+        else:
+            print(f'Страницу {pageName} невозможно распарсить')
+
+        return parsed_elements

@@ -6,6 +6,7 @@ import Footer from "../components/ChoicePage/Footer/Footer";
 import Loader from "../components/general/Loader/Loader";
 
 import { useAsyncRequest } from "../hooks/useRequest.hook";
+import MenuManager from "../services";
 import { getMenu } from "../api/api";
 import { NavigationField } from "../types";
 
@@ -25,7 +26,19 @@ const ChoicePage = () => {
 
     useEffect(() => {
         if (data) {
-            setPages(data)
+            var newData = data
+            if (typeof data === 'string') {
+                newData = JSON.parse(data)
+            }
+
+            if (findName.length > 0) {
+                const navManager = new MenuManager(newData)
+                const node = navManager.getNode(findName)
+
+                setPages(node)
+                return
+            }
+            setPages(newData)
         }
     }, [loading, data, findName])
 
@@ -37,6 +50,14 @@ const ChoicePage = () => {
     return (
        <div className="page page--choicePage">
             <Header setFindName={setFindName} />
+
+            {
+                !loading && pages.length === 0 ?
+                    <div>TODO | Empty</div> 
+                :
+                     null
+            }
+
             {
                 loading ?
                     <Loader />

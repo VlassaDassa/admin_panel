@@ -1,0 +1,47 @@
+@import './../../../assets/styles/variables';
+
+
+
+.menu {
+    position: absolute;
+    right: -110px;
+    background: white;
+    z-index: 3;
+    
+    border-radius: 5px;
+    box-shadow: 0px 0px 12px 1px rgba(34, 60, 80, 0.2);
+}
+
+.left {
+    right: unset;
+    left: 50px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    column-gap: 10px;
+
+    cursor: pointer;
+    transition: background-color ease-in-out 0.1s;
+
+    &:hover {
+        background-color: #b7e1ff;
+    }
+}
+
+
+.handle {
+    width: 100%; 
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 5px 0;
+    background-color: $accent-color;
+    cursor: grab;
+}
+
+.handle:active {
+    cursor: grabbing;
+}

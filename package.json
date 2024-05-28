@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@types/react-transition-group": "^4.4.10"
+  },
+  "dependencies": {
+    "react-draggable": "^4.4.6"
   }
 }

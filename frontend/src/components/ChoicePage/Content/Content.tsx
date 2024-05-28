@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import Item from './../Item/Item';
 import MenuManager from '../../../services';
@@ -24,7 +24,9 @@ const Content: FC<ContentProps> = ({ pages, curPage, perPage, setCountPages }) =
     let start = perPage*curPage-perPage
     let end = perPage*curPage
 
-    setCountPages(Math.ceil(newPages.length / perPage))
+    useEffect(() => {
+        setCountPages(Math.ceil(newPages.length / perPage))
+    }, [newPages, perPage])
 
 
     return (

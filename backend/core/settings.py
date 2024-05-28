@@ -118,3 +118,5 @@ DEFAULT_LOCAL_PATH = './download/'
 
 PATH_TO_JS = 'htdocs/assets/js/index.js'
 LOCAL_PATH_TO_JS = './download/index.js'
+
+MAIN_SERVER_URL = 'http://www.uob-konakovo.ru'

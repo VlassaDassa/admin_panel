@@ -46,3 +46,19 @@ class MenuAPIView(APIView):
             print(f'Ошибка - {_ex}')
             return Response({'success': False, 'error': str(_ex)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+
+
+class EditPageAPIView(APIView):
+    
+
+    def get(self, request, *args, **kwargs):
+        try:
+            pageName = kwargs.get('pageName')
+            pageManage = services.PageManager()
+            page = pageManage.getPageObject(pageName)
+            
+            return Response(page)
+
+        except Exception as _ex:
+            print('Error: ',  _ex)
+            return Response({'error': str(_ex)}, status=500)
