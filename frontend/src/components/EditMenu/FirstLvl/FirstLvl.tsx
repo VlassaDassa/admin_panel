@@ -4,7 +4,7 @@ import NodePlus from '../NodePlus/NodePlus';
 import Level from '../Level/Level';
 import Loader from '../../general/Loader/Loader';
 import Button from '../../general/Button/Button';
-import ButtonPortal from '../../general/Button/ButtonPortal';
+import Portal from '../../general/Portal/Portal';
 import LevelComponent from '../LevelComponent/LevelComponent';
 
 import { getMenu } from '../../../api/api';
@@ -67,9 +67,9 @@ const FirstLvl = () => {
 
     return (
         <>
-            <ButtonPortal parentId='buttonPortal'>
+            <Portal parentId='buttonPortal'>
                 <Button text='Сохранить' handler={saveMenu} addClass='saveMenu' />
-            </ButtonPortal>
+            </Portal>
 
             {menu &&
                 menu.map((item, index) => {

@@ -9,14 +9,13 @@ export interface NavigationField {
 
 
 export interface PageObjects {
-    children: any;
+    children?: PageObjects[];
     type: string;
     class: string;
     text?: string;
     href?: string;
     alt?: string;
     src?:string;
-    child: PageObjects[];
 }
 
 

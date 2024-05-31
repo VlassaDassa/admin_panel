@@ -1,11 +1,15 @@
-import { ChangeEvent, FC, useEffect, useState, useRef  } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import styles from './paragraph.module.scss';
+import { PageObjects } from '../../../types';
+import { AddNewElement } from '../../../services';
 
 
 
 interface ParagraphProps {
     text?: string;
     children?: React.ReactNode;
+    pageObjects: PageObjects[];
+    setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
 }
 
 interface Value {
@@ -13,28 +17,52 @@ interface Value {
 }
 
 
-const Paragraph: FC<ParagraphProps> = ({ text, children }) => {
+let debounceTimer: NodeJS.Timeout;
+
+const Paragraph: FC<ParagraphProps> = ({ text, children, pageObjects, setPageObject }) => {
     const [value, setValue] = useState<Value>({
         value: text,
     });
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 
     useEffect(() => {
-        if (textareaRef.current) {
-            const textarea = textareaRef.current;
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }
-    }, []);
+        setValue({
+            value: text
+        })
+    }, [text]);
 
-    const changeInput = (e: ChangeEvent<HTMLTextAreaElement> ) => {
+    interface SaveNodeArgs {
+        oldText: string;
+        pageObjects: PageObjects[];
+        newValue: string;
+        href?: string;
+        src?: string;
+        type: string;
+    }
+
+    const changeInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setValue({
             value: e.target.value,
         })
 
         e.target.style.height = 'auto';
         e.target.style.height = `${e.target.scrollHeight}px`;
+
+        if (text) {
+            var args: SaveNodeArgs = {
+                oldText: text,
+                pageObjects: pageObjects,
+                newValue: e.target.value,
+                type: 'text'
+            };
+        }
+        
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(() => {
+            const newPageObject = AddNewElement.saveNode(args);
+            setPageObject(newPageObject);
+        }, 2000);
     }
 
     return (
@@ -42,7 +70,6 @@ const Paragraph: FC<ParagraphProps> = ({ text, children }) => {
             {
                 text ?
                     <textarea 
-                        ref={textareaRef}
                         rows={1} 
                         value={value.value} 
                         onChange={changeInput} 

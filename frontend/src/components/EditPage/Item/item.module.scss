@@ -12,13 +12,6 @@
     }
 }
 
-.settingsIco {
-    right: -40px;
-    position: absolute;
-    
-    cursor: pointer;
-}
-
 .dragHandle,
 .settingsIco {
     transition: background-color ease-in-out 0.1s;
@@ -29,6 +22,14 @@
     &:hover {
         background-color: rgb(221, 221, 221);
     }
+}
+
+.settingsIco {
+    right: -40px;
+    padding: 30px 20px;
+    position: absolute;
+    
+    cursor: pointer;
 }
 
 

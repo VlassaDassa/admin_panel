@@ -1,11 +1,15 @@
-import { ChangeEvent, FC, useEffect, useState, useRef  } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 
 import styles from './link.module.scss';
+import { PageObjects } from '../../../types';
+import { AddNewElement } from '../../../services';
 
 
 interface LinkProps {
     text: string,
     href: string,
+    pageObjects: PageObjects[];
+    setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
 }
 
 interface Value {
@@ -13,22 +17,32 @@ interface Value {
     href: string;
 }
 
+let debounceTimer: NodeJS.Timeout;
 
-const Link: FC<LinkProps> = ({ text, href }) => {
+const Link: FC<LinkProps> = ({ text, href, pageObjects, setPageObject }) => {
     const [value, setValue] = useState<Value>({
         value: text,
         href: href
     });
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
 
     useEffect(() => {
-        if (textareaRef.current) {
-            const textarea = textareaRef.current;
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }
-    }, []);
+        setValue({
+            value: text,
+            href: href,
+        })
+    }, [text, href]);
 
+
+
+    interface SaveNodeArgs {
+        oldText: string;
+        pageObjects: PageObjects[];
+        newValue: string;
+        href?: string;
+        src?: string;
+        type: string;
+    }
 
     const changeInput = (e: ChangeEvent<HTMLTextAreaElement> ) => {
         setValue({
@@ -38,11 +52,25 @@ const Link: FC<LinkProps> = ({ text, href }) => {
 
         e.target.style.height = 'auto';
         e.target.style.height = `${e.target.scrollHeight}px`;
+
+        const args: SaveNodeArgs = {
+            oldText: text,
+            pageObjects: pageObjects,
+            newValue: e.target.value,
+            href: href,
+            type: 'link'
+        };
+
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(() => {
+            const newPageObject = AddNewElement.saveNode(args);
+            setPageObject(newPageObject);
+        }, 500);
     }
 
     return (
         <textarea 
-            ref={textareaRef}
             rows={1} 
             value={value.value} 
             onChange={changeInput} 

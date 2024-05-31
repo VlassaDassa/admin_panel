@@ -4,6 +4,8 @@ import { FC, ReactNode, useState, useEffect, useRef } from 'react';
 import Menu from '../Menu/Menu';
 
 import styles from './item.module.scss';
+import { EditPageManager } from '../../../services';
+import { PageObjects } from '../../../types';
 import draggableIco from './../../../assets/images/editPage/draggableIcon.svg';
 import settingsIco from './../../../assets/images/editPage/settingsIcon.svg';
 import plusIco from './../../../assets/images/general/plus.svg';
@@ -19,21 +21,25 @@ interface SettingsObject {
 interface ItemProps {
     provided: DraggableProvided;
     item: ReactNode | SettingsObject;
+    pageObject: PageObjects[];
+    setItems: React.Dispatch<React.SetStateAction<(React.ReactNode | SettingsObject)[]>>
+    setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
 }
 
-const Item: FC<ItemProps> = ({ item, provided }) => {
+const Item: FC<ItemProps> = ({ item, pageObject, provided, setItems, setPageObject }) => {
     const [showMenu, setShowMenu] = useState<boolean>(false)
     const [newStrMenu, setNewStrMenu] = useState<boolean>(false)
     const menuRef = useRef<HTMLUListElement | null>(null);
     const settingsIcoRef = useRef<HTMLImageElement>(null);
     const settingsPlusIcoRef = useRef<HTMLImageElement>(null);
-
+    const inputHref = useRef<HTMLInputElement>(null);
 
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node) &&
                 event.target !== settingsIcoRef.current &&
+                event.target !== inputHref.current &&
                 event.target !== settingsPlusIcoRef.current) {
                 closeMenu();
             }
@@ -43,22 +49,9 @@ const Item: FC<ItemProps> = ({ item, provided }) => {
         return () => {
             document.removeEventListener('click', handleClickOutside);
         };
-    }, []);
+        
+    }, [pageObject]);
 
-
-    const isSettingsObject = (item: any): item is SettingsObject => {
-        return (item as SettingsObject).settings !== undefined;
-    }
-
-    const getItemTypeClassName = (item: any): string => {
-        if (isSettingsObject(item)) {
-            return 'Paragraph'
-        }
-        // Нужно для получения типов. По типу определяется класс, а по классу отступы
-        // Родные отступы самих компонентов не учитывались из-за кучи обёрток библиотеки 
-        // А как прокинуть родные классы я не знал, поэтому класс - это имя компонента (item.type.name)
-        return item.type.name
-    };
 
     const openMenu = () => {
         setShowMenu(true)
@@ -76,14 +69,14 @@ const Item: FC<ItemProps> = ({ item, provided }) => {
 
     return (
         <div
+            id='inputHrefPortal'
             ref={provided.innerRef}
             {...provided.draggableProps}
-            className={`${styles.draggableBlock} ${styles[getItemTypeClassName(item)]}`}
+            className={`${styles.draggableBlock} ${styles[EditPageManager.getItemTypeClassName(item)]}`}
         >
             {
-                !isSettingsObject(item) ?
+                !EditPageManager.isSettingsObject(item) ?
                     <>
-                    
                         <img 
                             src={draggableIco} 
                             alt="Ручка для перетягивания блока" 
@@ -111,7 +104,18 @@ const Item: FC<ItemProps> = ({ item, provided }) => {
             />
 
             {
-                showMenu ? <Menu menuRef={menuRef} newStrMenu={newStrMenu} /> : null
+                showMenu ? 
+                    <Menu 
+                        menuRef={menuRef} 
+                        newStrMenu={newStrMenu} 
+                        setItems={setItems} 
+                        item={item} 
+                        pageObject={pageObject} 
+                        setPageObject={setPageObject}
+                        inputHref={inputHref}
+                    /> 
+                : 
+                    null
             }
 
 

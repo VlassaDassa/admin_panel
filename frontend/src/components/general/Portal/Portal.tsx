@@ -3,12 +3,12 @@ import { createPortal } from "react-dom";
 
 
 
-interface ButtonPortalProps {
+interface PortalProps {
     children: ReactNode;
     parentId: string;
 }
 
-const ButtonPortal = ({ children, parentId }: ButtonPortalProps) => {
+const Portal = ({ children, parentId }: PortalProps) => {
     const portalRoot = document.getElementById(parentId);
 
     if (!portalRoot) return null;
@@ -16,4 +16,4 @@ const ButtonPortal = ({ children, parentId }: ButtonPortalProps) => {
     return createPortal(children, portalRoot);
 };
 
-export default ButtonPortal;
+export default Portal;

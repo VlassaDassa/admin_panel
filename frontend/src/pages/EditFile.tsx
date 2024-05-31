@@ -25,8 +25,7 @@ const EditFile = () => {
         }
     }, [data, loading])
 
-
-
+    
     if (error) {
         return <div>TODO | ERROR</div>
     }
@@ -37,8 +36,15 @@ const EditFile = () => {
 
     return (
         <div className="page page--editFile">
-            <Header pageName={EditPageManager.getPageName(pageObject)} />
-            <Content objects={EditPageManager.renderObjects(pageObject)} />
+            <Header
+                pageName={EditPageManager.getPageName(pageObject)} 
+            />
+
+            <Content
+                objects={EditPageManager.renderObjects(pageObject, pageObject, setPageObject)} 
+                pageObject={pageObject} 
+                setPageObject={setPageObject}
+            />
         </div>
     )
 }

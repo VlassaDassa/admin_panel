@@ -1,30 +1,33 @@
-import { ChangeEvent, FC, useEffect, useState, useRef  } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import styles from './subtitle.module.scss';
+import { PageObjects } from '../../../types';
+import { AddNewElement } from '../../../services';
 
 
 
 interface SubtitleProps {
     text?: string;
     children?: React.ReactNode;
+    pageObjects: PageObjects[];
+    setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
 }
 
 interface Value {
     value?: string;
 }
 
-const Subtitle: FC<SubtitleProps> = ({ text, children }) => {
+let debounceTimer: NodeJS.Timeout;
+
+const Subtitle: FC<SubtitleProps> = ({ text, children, pageObjects, setPageObject }) => {
     const [value, setValue] = useState<Value>({
         value: text,
     });
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
-        if (textareaRef.current) {
-            const textarea = textareaRef.current;
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }
-    }, []);
+        setValue({
+            value: text
+        })
+    }, [text]);
 
     const changeInput = (e: ChangeEvent<HTMLTextAreaElement> ) => {
         setValue({
@@ -33,6 +36,31 @@ const Subtitle: FC<SubtitleProps> = ({ text, children }) => {
 
         e.target.style.height = 'auto';
         e.target.style.height = `${e.target.scrollHeight}px`;
+
+        interface SaveNodeArgs {
+            oldText: string;
+            pageObjects: PageObjects[];
+            newValue: string;
+            href?: string;
+            src?: string;
+            type: string;
+        }
+
+        if (text) {
+            var args: SaveNodeArgs = {
+                oldText: text,
+                pageObjects: pageObjects,
+                newValue: e.target.value,
+                type: 'subtitle'
+            };
+        }
+        
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(() => {
+            const newPageObject = AddNewElement.saveNode(args);
+            setPageObject(newPageObject);
+        }, 2000);
     }
 
 
@@ -41,7 +69,6 @@ const Subtitle: FC<SubtitleProps> = ({ text, children }) => {
             {
                 text ? 
                     <textarea 
-                        ref={textareaRef}
                         rows={1} 
                         value={value.value} 
                         onChange={changeInput} 
