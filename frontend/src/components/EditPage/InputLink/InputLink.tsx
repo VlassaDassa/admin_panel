@@ -31,29 +31,26 @@ const InputHref: FC<InputHref> = ({ inputHref, oldLink, posLink, pageObject, set
     }, [oldLink])
 
     
-    // TODO Ужасное условие
+
     const inputHrefChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value
-        setValue(newValue) 
-
-        if (operationName === 'image') {
-            if (oldLink.src) {
-                let newElement = AddNewElement.createImage(newValue)
-                const newPageObject = [...pageObject]
-                newPageObject.splice(posLink, 1, newElement)
-                setPageObject([...newPageObject])
-                return
-            }
+        const newValue = e.target.value;
+        setValue(newValue);
+        
+        const newPageObject = [...pageObject];
+        let newElement;
+        
+        if (operationName === 'image' && oldLink.src) {
+            newElement = AddNewElement.createImage(newValue);
+        } 
+        else if (oldLink.text) {
+            newElement = AddNewElement.createLink(oldLink.text, newValue);
         }
-
-        if (oldLink.text) {
-            let newElement = AddNewElement.createLink(oldLink.text, newValue)
-            const newPageObject = [...pageObject]
-            newPageObject.splice(posLink, 1, newElement)
-            setPageObject([...newPageObject])
-            return
+        
+        if (newElement) {
+            newPageObject.splice(posLink, 1, newElement);
+            setPageObject(newPageObject);
         }
-    }
+    };
 
 
 

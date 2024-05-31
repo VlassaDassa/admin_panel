@@ -5,7 +5,7 @@ import InputLink from '../InputLink/InputLink';
 import Portal from '../../general/Portal/Portal';
 
 import styles from './menu.module.scss';
-import { AddNewElement } from '../../../services';
+import { AddNewElement, EditPageManager } from '../../../services';
 import { PageObjects } from '../../../types';
 import linkIco from './../../../assets/images/editPage/linkIcon.svg';
 import textIco from './../../../assets/images/editPage/textIcon.svg';
@@ -85,37 +85,32 @@ const Menu: FC<MenuProps> = ({ menuRef, newStrMenu, item, pageObject, setPageObj
 
     
     const changeNode = (operationName: string) => {
-        setOperationName(operationName)
-
+        setOperationName(operationName);
+      
         if (operationName === 'image' && newStrMenu) {
-            let result = AddNewElement.deleteImage(pageObject)
+            const result = EditPageManager.deleteImage(pageObject);
             setPageObject([...result]);
         }
-
+      
         if (!newStrMenu) {
-            let el = AddNewElement.showType(item, pageObject, operationName)
-            if (el && el.show && ['link', 'image'].includes(operationName)) {
-                setShowInputHref(true)
+            const el = EditPageManager.showType(item, pageObject, operationName);
+            if (el?.show && ['link', 'image'].includes(operationName)) {
+                setShowInputHref(true);
                 if (el.el) {
-                    setOldLink(el.el)
-                    setPosLink(el.elIndex)
+                    setOldLink(el.el);
+                    setPosLink(el.elIndex);
                 }
-                return
+                return;
             }
         }
         
-        let newPageObject
-        if (operationName === 'delete') {
-            newPageObject = AddNewElement.deleteNode(item as ReactNode, pageObject)
-        }
-        else {
-            newPageObject = AddNewElement.newNode(newStrMenu, pageObject, item, operationName)
-        }
-
+        const newPageObject = operationName === 'delete'
+          ? EditPageManager.deleteNode(item as ReactNode, pageObject)
+          : AddNewElement.newNode(newStrMenu, pageObject, item, operationName);
+      
         if (newPageObject) {
             setPageObject([...newPageObject]);
         }
-
     }
 
     return (

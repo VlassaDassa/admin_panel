@@ -6,7 +6,7 @@ import Header from "../components/EditPage/Header/Header";
 
 import { getPage } from "../api/api";
 import { useAsyncRequest } from "../hooks/useRequest.hook";
-import { EditPageManager } from "../services";
+import { EditPageManager, RenderManager } from "../services";
 import { PageObjects } from "../types";
 
 
@@ -41,7 +41,7 @@ const EditFile = () => {
             />
 
             <Content
-                objects={EditPageManager.renderObjects(pageObject, pageObject, setPageObject)} 
+                objects={RenderManager.renderObjects(pageObject, pageObject, setPageObject)} 
                 pageObject={pageObject} 
                 setPageObject={setPageObject}
             />

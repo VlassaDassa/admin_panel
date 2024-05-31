@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import styles from './paragraph.module.scss';
 import { PageObjects } from '../../../types';
-import { AddNewElement } from '../../../services';
+import { AddNewElement, EditPageManager } from '../../../services';
 
 
 
@@ -23,7 +23,6 @@ const Paragraph: FC<ParagraphProps> = ({ text, children, pageObjects, setPageObj
     const [value, setValue] = useState<Value>({
         value: text,
     });
-
 
     useEffect(() => {
         setValue({
@@ -60,7 +59,7 @@ const Paragraph: FC<ParagraphProps> = ({ text, children, pageObjects, setPageObj
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
-            const newPageObject = AddNewElement.saveNode(args);
+            const newPageObject = EditPageManager.saveNode(args);
             setPageObject(newPageObject);
         }, 2000);
     }

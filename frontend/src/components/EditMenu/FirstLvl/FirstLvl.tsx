@@ -10,7 +10,7 @@ import LevelComponent from '../LevelComponent/LevelComponent';
 import { getMenu } from '../../../api/api';
 import { updateMenu } from '../../../api/api';
 import { useAsyncRequest } from '../../../hooks/useRequest.hook';
-import MenuManager from '../../../services';
+import { MenuManager } from '../../../services';
 
 import { NavigationField } from '../../../types';
 
@@ -37,6 +37,7 @@ const FirstLvl = () => {
 
     }, [loading, data]);
 
+    
     const addNode = () => {
         const navManager = new MenuManager(menu);
         const curData = navManager.deleteNode('Новая страница', 'name')

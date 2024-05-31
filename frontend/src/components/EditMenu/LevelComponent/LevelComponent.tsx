@@ -4,7 +4,7 @@ import Node from "../Node/Node";
 import Level from "../Level/Level";
 import NodePlus from "../NodePlus/NodePlus";
 
-import MenuManager from "../../../services";
+import { MenuManager } from "../../../services";
 import { NavigationField } from "../../../types";
 
 

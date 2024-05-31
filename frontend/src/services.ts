@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import _ from 'lodash';
 
 import Link from "./components/EditPage/Link/Link";
@@ -14,8 +14,22 @@ import { NavigationField, PageObjects } from "./types";
 
 
 
+interface SettingsObject {
+    settings: boolean;
+}
 
-class MenuManager {
+interface SaveNodeArgs {
+    oldText: string;
+    pageObjects: PageObjects[];
+    newValue: string;
+    href?: string;
+    src?: string;
+    type: string;
+}
+
+
+
+export class MenuManager {
     data: NavigationField[];
 
     constructor(data: NavigationField[]) {
@@ -107,13 +121,72 @@ class MenuManager {
         return regex.test(itemName);
     };
 }
-export default MenuManager;
 
 
+export class RenderManager {
+    
+    static renderObjects = (objects: PageObjects[], pageObjects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>): JSX.Element[] => {
+        return objects.flatMap((item, index) => {
+            switch (item.type) {
+                case '<h1>':
+                    return this.renderH1(item, index, objects, setPageObject, pageObjects);
+                case '<p>':
+                    return this.renderParagraph(item, index, objects, setPageObject, pageObjects);
+                case '<a>':
+                    return this.renderLink(item, index, objects, setPageObject, pageObjects);
+                case '<strong>':
+                    return this.renderStrong(item, index, objects, setPageObject, pageObjects);
+                case '<h2>':
+                    return this.renderSubtitle(item, index, objects, setPageObject, pageObjects);
+                case '<img>':
+                    return this.renderImage(item, index, objects, setPageObject, pageObjects);
+                default:
+                    return null;
+            }
+        }).filter(Boolean) as JSX.Element[];
+    }
+
+    private static renderH1 = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
+        return React.createElement(Title, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
+    }
+
+    private static renderParagraph = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
+        if (item.children) {
+            return React.createElement(Paragraph, { key: index, pageObjects: objects, setPageObject: setPageObject },
+                this.renderObjects(item.children, pageObjects, setPageObject)
+            );
+        } 
+        else {
+            return React.createElement(Paragraph, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
+        }
+    }
+
+    private static renderLink = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
+        return React.createElement(Link, { key: index, text: item.text || '', href: item.href || '', pageObjects: pageObjects, setPageObject: setPageObject });
+    }
+
+    private static renderStrong = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
+        return React.createElement(Strong, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
+    }
+
+    private static renderSubtitle = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
+        if (item.children) {
+            return React.createElement(Subtitle, { key: index, pageObjects: objects, setPageObject: setPageObject },
+                this.renderObjects(item.children, pageObjects, setPageObject)
+            );
+        } 
+        else {
+            return React.createElement(Subtitle, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
+        }
+    }
+
+    private static renderImage = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
+        return React.createElement(Image, { key: index, src: item.src || '', alt: item.alt || '', pageObjects: pageObjects, setPageObject: setPageObject });
+    }
+}
 
 
 export class EditPageManager {
-
 
     static getPageName = (objects: PageObjects[]): string => {
         let pageName = 'Без названия';
@@ -164,17 +237,7 @@ export class EditPageManager {
             pageObject.children = props.children || null;
         }
 
-        return this.cleanObject(pageObject)
-    }
-
-    static cleanObject = (obj: any): any => {
-        const cleanObj: any = {};
-        Object.keys(obj).forEach(key => {
-            if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {
-                cleanObj[key] = obj[key];
-            }
-        });
-        return cleanObj;
+        return pageObject
     }
 
     static isSettingsObject = (item: any): item is SettingsObject => {
@@ -191,144 +254,6 @@ export class EditPageManager {
         return item.type.name
     };
 
-
-    static renderObjects = (objects: PageObjects[], pageObjects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>): JSX.Element[] => {
-        return objects.flatMap((item, index) => {
-            switch (item.type) {
-                case '<h1>':
-                    return EditPageManager.renderH1(item, index, objects, setPageObject, pageObjects);
-                case '<p>':
-                    return EditPageManager.renderParagraph(item, index, objects, setPageObject, pageObjects);
-                case '<a>':
-                    return EditPageManager.renderLink(item, index, objects, setPageObject, pageObjects);
-                case '<strong>':
-                    return EditPageManager.renderStrong(item, index, objects, setPageObject, pageObjects);
-                case '<h2>':
-                    return EditPageManager.renderSubtitle(item, index, objects, setPageObject, pageObjects);
-                case '<img>':
-                    return EditPageManager.renderImage(item, index, objects, setPageObject, pageObjects);
-                default:
-                    return null;
-            }
-        }).filter(Boolean) as JSX.Element[];
-    }
-
-    private static renderH1 = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        return React.createElement(Title, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
-    }
-
-    private static renderParagraph = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        if (item.children) {
-            return React.createElement(Paragraph, { key: index, pageObjects: objects, setPageObject: setPageObject },
-                EditPageManager.renderObjects(item.children, pageObjects, setPageObject)
-            );
-        } 
-        else {
-            return React.createElement(Paragraph, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
-        }
-    }
-
-    private static renderLink = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        return React.createElement(Link, { key: index, text: item.text || '', href: item.href || '', pageObjects: pageObjects, setPageObject: setPageObject });
-    }
-
-    private static renderStrong = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        return React.createElement(Strong, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
-    }
-
-    private static renderSubtitle = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        if (item.children) {
-            return React.createElement(Subtitle, { key: index, pageObjects: objects, setPageObject: setPageObject },
-                EditPageManager.renderObjects(item.children, pageObjects, setPageObject)
-            );
-        } 
-        else {
-            return React.createElement(Subtitle, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
-        }
-    }
-
-    private static renderImage = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        return React.createElement(Image, { key: index, src: item.src || '', alt: item.alt || '', pageObjects: pageObjects, setPageObject: setPageObject });
-    }
-}
-
-
-
-interface SettingsObject {
-    settings: boolean;
-}
-
-interface SaveNodeArgs {
-    oldText: string;
-    pageObjects: PageObjects[];
-    newValue: string;
-    href?: string;
-    src?: string;
-    type: string;
-}
-
-export class AddNewElement {
-
-    static createLink = (text: string, href='#') => {
-        return {
-                type: '<p>',
-                class: 'newsParagraph',
-                children: [
-                    {
-                        type: '<a>',
-                        class: 'newsLink',
-                        text: text,
-                        href: href,
-                    }
-                ]
-        }
-    }
-
-    private static createText = (text: string) => {
-        return {
-            type: '<p>',
-            class: 'newsParagraph',
-            text: text,             
-        }
-    }
-
-    private static createBoldText = (text: string) => {
-        return {
-            type: '<p>',
-            class: 'newsParagraph',
-            children: [
-                {
-                    type: '<strong>',
-                    class: 'newsJustStrong',
-                    text: text,
-                }
-            ]           
-        }
-    }
-
-    private static createTitle = (text: string) => {
-        return {
-                    type: '<h1>',
-                    class: 'subtitle',
-                    text: text, 
-                }
-    }
-
-    static createImage = (src: string) => {
-        return {
-            type: '<p>',
-            class: 'newsParagraph',
-            children: [
-                {
-                    type: '<img>',
-                    class: 'newsPageImage',
-                    src: src,
-                    alt: 'Изображение'
-                }
-            ]
-        }
-    }
-
     static deleteImage = (pageObject: PageObjects[], text='Новая строка') => {
         const newImage = this.findElement(text, pageObject, 'src')
         if (newImage) {
@@ -338,7 +263,7 @@ export class AddNewElement {
         return pageObject
     }
     
-    private static findProps = (element: PageObjects, prop: keyof PageObjects): string => {
+    static findProps = (element: PageObjects, prop: keyof PageObjects): string => {
         var elementText = '';
         if (element.children && element.children.length > 0) {
             elementText = this.findProps(element.children[0], prop);
@@ -350,7 +275,7 @@ export class AddNewElement {
         return elementText;
     }
 
-    private static findElement = (elementText: string, pageObject: PageObjects[], typeField: keyof PageObjects = 'text'): [number, (PageObjects | undefined)] => {
+    static findElement = (elementText: string, pageObject: PageObjects[], typeField: keyof PageObjects = 'text'): [number, (PageObjects | undefined)] => {
         let elem
 
         function recursSearch(item: PageObjects): boolean {
@@ -380,74 +305,36 @@ export class AddNewElement {
 
         return [counter, elem]
     }
-    
-    // TODO какого хуя any. Что это за уебанское условие, чел
+
     static deleteNode = (item: ReactNode, pageObject: PageObjects[]) => {
-        const formatItem = EditPageManager.extractProps(item)
-    
-        if (formatItem) {
-            try {
-                if (item && React.isValidElement(item) && item.props.children[0].type.name === 'Image') {
-                    let text = this.findProps(formatItem, 'src');
-                    return this.deleteImage(pageObject, text)
-                }
-                else {
-                    let text = this.findProps(formatItem, 'text');
-                    var oldElementIndex = this.findElement(text, pageObject)[0];
-                    if (oldElementIndex !== -1) { 
-                        const updatedPageObject = _.cloneDeep(pageObject); 
-                        updatedPageObject.splice(oldElementIndex, 1);
-                        return updatedPageObject;
-                    }
-                }
+        const formatItem = EditPageManager.extractProps(item);
+      
+        if (!formatItem) return pageObject;
+      
+        const handleDeletion = (property: string) => {
+            const text = this.findProps(formatItem, property as keyof PageObjects);
+            const [oldElementIndex] = this.findElement(text, pageObject);
+            if (oldElementIndex !== -1) {
+                const updatedPageObject = _.cloneDeep(pageObject);
+                updatedPageObject.splice(oldElementIndex, 1);
+                return updatedPageObject;
             }
-            catch {
-                let text = this.findProps(formatItem, 'text');
-                var oldElementIndex = this.findElement(text, pageObject)[0];
-                if (oldElementIndex !== -1) { 
-                    const updatedPageObject = _.cloneDeep(pageObject); 
-                    updatedPageObject.splice(oldElementIndex, 1);
-                    return updatedPageObject;
-                }
+            return pageObject;
+        };
+      
+        try {
+            if (item && React.isValidElement(item) && item.props.children[0].type.name === 'Image') {
+                const src = this.findProps(formatItem, 'src');
+                return this.deleteImage(pageObject, src);
+            } 
+            else {
+                return handleDeletion('text');
             }
+        } 
+        catch {
+            return handleDeletion('text');
         }
-    }
-    
-    static newNode = (newElement: boolean, pageObject: PageObjects[], item: ReactNode | SettingsObject, type: string) => {
-        interface ElementCreators {
-            [key: string]: (text: string, href?: string) => PageObjects;
-        }
-
-        const createElement: ElementCreators = {
-            link: (text: string, href?: string) => this.createLink(text, href),
-            text: (text: string) => this.createText(text),
-            boldText: (text: string) => this.createBoldText(text),
-            title: (text: string) => this.createTitle(text),
-            image: (src: string) => this.createImage(src),
-        }
-
-        if (newElement) {
-            const newElement = createElement[type]('Новая строка')
-            pageObject.push(newElement)
-        }
-
-        else {
-            if (!EditPageManager.isSettingsObject(item)) {
-                const formatItem = EditPageManager.extractProps(item)
-
-                if (formatItem) {
-                    const text = this.findProps(formatItem, 'text')
-                    const oldElement = this.findElement(text, pageObject)
-        
-                    if (oldElement && oldElement[1]) {
-                        const newElement = createElement[type](oldElement[1].text!, oldElement[1].href!);
-                        pageObject.splice(oldElement[0], 1, newElement)
-                    }
-                }
-            }
-        }
-        return pageObject
-    }
+    };
 
     static saveNode = ({ oldText, pageObjects, newValue, href, type }: SaveNodeArgs) => {
         interface ElementCreators {
@@ -455,11 +342,11 @@ export class AddNewElement {
         }
 
         const createElement: ElementCreators = {
-            link: (text: string, href?: string) => this.createLink(text, href),
-            text: (text: string) => this.createText(text),
-            boldText: (text: string) => this.createBoldText(text),
-            title: (text: string) => this.createTitle(text),
-            image: (src: string) => this.createImage(src),
+            link: (text: string, href?: string) => AddNewElement.createLink(text, href),
+            text: (text: string) => AddNewElement.createText(text),
+            boldText: (text: string) => AddNewElement.createBoldText(text),
+            title: (text: string) => AddNewElement.createTitle(text),
+            image: (src: string) => AddNewElement.createImage(src),
         }
 
         const newElement = type === 'image' ? createElement[type](newValue) : createElement[type](newValue, href);
@@ -501,24 +388,119 @@ export class AddNewElement {
     }
 
     static saveOrder = (newItems: ReactNode[]) => {
-        
         const pageObject = []
         for (let item of newItems) {
             const formatItem = EditPageManager.extractProps(item)
+            const condition = (formatItem.type == '<p>') && 
+                                    (formatItem.children && formatItem.children.length > 0) 
+                                    && (formatItem.children[0].type === 'Image')
 
-            // TODO. Слишком топорно и прямо. И вообще, img Должен быть изначально,
-            // Непонятно почему Image
-            if (formatItem.type == '<p>') {
-                if (formatItem.children && formatItem.children.length > 0) {
-                    if (formatItem.children[0].type === 'Image') {
-                        formatItem.children[0].type = '<img>'
-                    }
-                }
+            if (condition) {
+                formatItem.children[0].type = '<img>'
             }
-            console.log('finL: ', formatItem)
             pageObject.push(formatItem)
         }
 
+        return pageObject
+    }
+}
+
+
+export class AddNewElement {
+
+    static createLink = (text: string, href='#') => {
+        return {
+                type: '<p>',
+                class: 'newsParagraph',
+                children: [
+                    {
+                        type: '<a>',
+                        class: 'newsLink',
+                        text: text,
+                        href: href,
+                    }
+                ]
+        }
+    }
+
+    static createText = (text: string) => {
+        return {
+            type: '<p>',
+            class: 'newsParagraph',
+            text: text,             
+        }
+    }
+
+    static createBoldText = (text: string) => {
+        return {
+            type: '<p>',
+            class: 'newsParagraph',
+            children: [
+                {
+                    type: '<strong>',
+                    class: 'newsJustStrong',
+                    text: text,
+                }
+            ]           
+        }
+    }
+
+    static createTitle = (text: string) => {
+        return {
+                    type: '<h1>',
+                    class: 'subtitle',
+                    text: text, 
+                }
+    }
+
+    static createImage = (src: string) => {
+        return {
+            type: '<p>',
+            class: 'newsParagraph',
+            children: [
+                {
+                    type: '<img>',
+                    class: 'newsPageImage',
+                    src: src,
+                    alt: 'Изображение'
+                }
+            ]
+        }
+    }
+    
+    static newNode = (newElement: boolean, pageObject: PageObjects[], item: ReactNode | SettingsObject, type: string) => {
+        interface ElementCreators {
+            [key: string]: (text: string, href?: string) => PageObjects;
+        }
+
+        const createElement: ElementCreators = {
+            link: (text: string, href?: string) => this.createLink(text, href),
+            text: (text: string) => this.createText(text),
+            boldText: (text: string) => this.createBoldText(text),
+            title: (text: string) => this.createTitle(text),
+            image: (src: string) => this.createImage(src),
+        }
+
+        if (newElement) {
+            const newElement = createElement[type]('Новая строка')
+            pageObject.push(newElement)
+        }
+
+        else {
+            if (!EditPageManager.isSettingsObject(item)) {
+                const formatItem = EditPageManager.extractProps(item)
+
+                if (formatItem) {
+                    const text = EditPageManager.findProps(formatItem, 'text')
+                    const oldElement = EditPageManager.findElement(text, pageObject)
+        
+                    if (oldElement && oldElement[1]) {
+                        const newElement = createElement[type](oldElement[1].text!, oldElement[1].href!);
+                        pageObject.splice(oldElement[0], 1, newElement)
+                    }
+                }
+            }
+        }
         return pageObject
     }
 }

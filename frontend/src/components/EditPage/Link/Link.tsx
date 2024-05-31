@@ -2,7 +2,8 @@ import { ChangeEvent, FC, useEffect, useState } from 'react';
 
 import styles from './link.module.scss';
 import { PageObjects } from '../../../types';
-import { AddNewElement } from '../../../services';
+import { EditPageManager } from '../../../services';
+
 
 
 interface LinkProps {
@@ -17,6 +18,15 @@ interface Value {
     href: string;
 }
 
+interface SaveNodeArgs {
+    oldText: string;
+    pageObjects: PageObjects[];
+    newValue: string;
+    href?: string;
+    src?: string;
+    type: string;
+}
+
 let debounceTimer: NodeJS.Timeout;
 
 const Link: FC<LinkProps> = ({ text, href, pageObjects, setPageObject }) => {
@@ -25,7 +35,6 @@ const Link: FC<LinkProps> = ({ text, href, pageObjects, setPageObject }) => {
         href: href
     });
 
-
     useEffect(() => {
         setValue({
             value: text,
@@ -33,16 +42,6 @@ const Link: FC<LinkProps> = ({ text, href, pageObjects, setPageObject }) => {
         })
     }, [text, href]);
 
-
-
-    interface SaveNodeArgs {
-        oldText: string;
-        pageObjects: PageObjects[];
-        newValue: string;
-        href?: string;
-        src?: string;
-        type: string;
-    }
 
     const changeInput = (e: ChangeEvent<HTMLTextAreaElement> ) => {
         setValue({
@@ -64,7 +63,7 @@ const Link: FC<LinkProps> = ({ text, href, pageObjects, setPageObject }) => {
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
-            const newPageObject = AddNewElement.saveNode(args);
+            const newPageObject = EditPageManager.saveNode(args);
             setPageObject(newPageObject);
         }, 500);
     }

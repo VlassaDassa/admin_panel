@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 
 import Item from './../Item/Item';
-import MenuManager from '../../../services';
+import { MenuManager } from '../../../services';
 
 import styles from './content.module.scss';
 import { NavigationField } from '../../../types';

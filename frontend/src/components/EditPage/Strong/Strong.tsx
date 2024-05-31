@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import styles from './strong.module.scss';
 import { PageObjects } from '../../../types';
-import { AddNewElement } from '../../../services';
+import { EditPageManager } from '../../../services';
 
 
 
@@ -17,6 +17,8 @@ interface Value {
 }
 
 let debounceTimer: NodeJS.Timeout;
+
+
 
 const Strong: FC<StrongProps> = ({ text, children, pageObjects, setPageObject }) => {
     const [value, setValue] = useState<Value>({
@@ -59,7 +61,7 @@ const Strong: FC<StrongProps> = ({ text, children, pageObjects, setPageObject })
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
-            const newPageObject = AddNewElement.saveNode(args);
+            const newPageObject = EditPageManager.saveNode(args);
             setPageObject(newPageObject);
         }, 2000);
     }

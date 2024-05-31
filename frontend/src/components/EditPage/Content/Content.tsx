@@ -5,7 +5,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautif
 import Item from '../Item/Item';
 
 import { PageObjects } from '../../../types';
-import { AddNewElement } from '../../../services';
+import { EditPageManager } from '../../../services';
 import styles from './content.module.scss';
 
 
@@ -52,7 +52,7 @@ const Content: FC<ContentProps> = ({ objects, pageObject, setPageObject }) => {
         setItems(newItems);
 
         const onlyReactNodes = newItems.filter(item => (item as ReactNode)?.hasOwnProperty('type')) as React.ReactNode[];
-        const newPageObject = AddNewElement.saveOrder(onlyReactNodes)
+        const newPageObject = EditPageManager.saveOrder(onlyReactNodes)
         setPageObject([...newPageObject])
     };
 

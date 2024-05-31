@@ -1,6 +1,6 @@
 import { FC, ChangeEvent, useState } from "react";
 
-import MenuManager from "../../../services";
+import { MenuManager } from "../../../services";
 
 import { NavigationField } from "../../../types";
 import styles from './../menuTree.module.scss';

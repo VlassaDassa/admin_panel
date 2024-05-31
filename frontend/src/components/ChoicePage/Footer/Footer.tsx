@@ -1,4 +1,5 @@
 import { FC } from 'react';
+
 import Button from '../../general/Button/Button';
 import PgnButton from '../PgnButton/PgnButton';
 

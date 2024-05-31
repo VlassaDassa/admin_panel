@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import styles from './subtitle.module.scss';
 import { PageObjects } from '../../../types';
-import { AddNewElement } from '../../../services';
+import { EditPageManager } from '../../../services';
 
 
 
@@ -17,6 +17,9 @@ interface Value {
 }
 
 let debounceTimer: NodeJS.Timeout;
+
+
+
 
 const Subtitle: FC<SubtitleProps> = ({ text, children, pageObjects, setPageObject }) => {
     const [value, setValue] = useState<Value>({
@@ -58,7 +61,7 @@ const Subtitle: FC<SubtitleProps> = ({ text, children, pageObjects, setPageObjec
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
-            const newPageObject = AddNewElement.saveNode(args);
+            const newPageObject = EditPageManager.saveNode(args);
             setPageObject(newPageObject);
         }, 2000);
     }

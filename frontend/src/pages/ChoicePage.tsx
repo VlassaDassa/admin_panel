@@ -6,7 +6,7 @@ import Footer from "../components/ChoicePage/Footer/Footer";
 import Loader from "../components/general/Loader/Loader";
 
 import { useAsyncRequest } from "../hooks/useRequest.hook";
-import MenuManager from "../services";
+import { MenuManager } from "../services";
 import { getMenu } from "../api/api";
 import { NavigationField } from "../types";
 
