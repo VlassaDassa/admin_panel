@@ -1,22 +1,15 @@
 import React, { ReactNode } from 'react';
 import _ from 'lodash';
 
-import Link from "./components/EditPage/Link/Link";
-import Paragraph from "./components/EditPage/Paragraph/Paragraph";
-import Subtitle from "./components/EditPage/Subtitle/Subtitle";
-import Title from "./components/EditPage/Title/Title";
-import Strong from "./components/EditPage/Strong/Strong";
-import Image from "./components/EditPage/Image/Image";
+import ElementDOM from './components/EditPage/Element/Element';
 
-import { NavigationField, PageObjects } from "./types";
+import { NavigationField, PageObjects, SettingsObject } from "./types";
 
 
 
 
 
-interface SettingsObject {
-    settings: boolean;
-}
+
 
 interface SaveNodeArgs {
     oldText: string;
@@ -27,7 +20,19 @@ interface SaveNodeArgs {
     type: string;
 }
 
+interface RenderElementArgs {
+    item: PageObjects, 
+    index: number, 
+    type: keyof typeof RenderManager.types;
+    setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
+    pageObjects: PageObjects[]   
+}
 
+interface RenderObjectsArgs {
+    objects: PageObjects[];
+    pageObjects: PageObjects[];
+    setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
+}
 
 export class MenuManager {
     data: NavigationField[];
@@ -124,64 +129,44 @@ export class MenuManager {
 
 
 export class RenderManager {
+    static types = {
+        '<h1>': 'title',
+        '<p>': 'paragraph',
+        '<a>': 'link',
+        '<strong>': 'strong',
+        '<h2>': 'subtitle',
+        '<img>': 'image',
+    }
     
-    static renderObjects = (objects: PageObjects[], pageObjects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>): JSX.Element[] => {
+    static renderObjects = ({ objects, pageObjects, setPageObject }: RenderObjectsArgs): JSX.Element[] => {
         return objects.flatMap((item, index) => {
-            switch (item.type) {
-                case '<h1>':
-                    return this.renderH1(item, index, objects, setPageObject, pageObjects);
-                case '<p>':
-                    return this.renderParagraph(item, index, objects, setPageObject, pageObjects);
-                case '<a>':
-                    return this.renderLink(item, index, objects, setPageObject, pageObjects);
-                case '<strong>':
-                    return this.renderStrong(item, index, objects, setPageObject, pageObjects);
-                case '<h2>':
-                    return this.renderSubtitle(item, index, objects, setPageObject, pageObjects);
-                case '<img>':
-                    return this.renderImage(item, index, objects, setPageObject, pageObjects);
-                default:
-                    return null;
-            }
+            return this.renderElementDOM({ item, index, setPageObject, pageObjects, type: item.type as keyof typeof RenderManager.types })
         }).filter(Boolean) as JSX.Element[];
     }
 
-    private static renderH1 = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        return React.createElement(Title, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
-    }
-
-    private static renderParagraph = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        if (item.children) {
-            return React.createElement(Paragraph, { key: index, pageObjects: objects, setPageObject: setPageObject },
-                this.renderObjects(item.children, pageObjects, setPageObject)
-            );
-        } 
-        else {
-            return React.createElement(Paragraph, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
+    private static renderElementDOM = ({ item, index, setPageObject, pageObjects, type } : RenderElementArgs) => {
+        var children
+        if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+            children = this.renderObjects({ objects: item.children, pageObjects, setPageObject })
         }
-    }
-
-    private static renderLink = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        return React.createElement(Link, { key: index, text: item.text || '', href: item.href || '', pageObjects: pageObjects, setPageObject: setPageObject });
-    }
-
-    private static renderStrong = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        return React.createElement(Strong, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
-    }
-
-    private static renderSubtitle = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        if (item.children) {
-            return React.createElement(Subtitle, { key: index, pageObjects: objects, setPageObject: setPageObject },
-                this.renderObjects(item.children, pageObjects, setPageObject)
-            );
-        } 
         else {
-            return React.createElement(Subtitle, { key: index, text: item.text || '', pageObjects: pageObjects, setPageObject: setPageObject });
+            children = null
         }
-    }
-
-    private static renderImage = (item: PageObjects, index: number, objects: PageObjects[], setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>, pageObjects: PageObjects[]): JSX.Element => {
-        return React.createElement(Image, { key: index, src: item.src || '', alt: item.alt || '', pageObjects: pageObjects, setPageObject: setPageObject });
+        
+        const elementType = this.types[type];
+        const elementDOMProps = {
+            key: index,
+            pageObjects: pageObjects,
+            setPageObject,
+            type: elementType,
+            children: children,
+            text: item.text,
+            href: item.href,
+            src: item.src,
+            alt: item.alt
+        };
+    
+        return React.createElement(ElementDOM, elementDOMProps);
     }
 }
 
@@ -210,7 +195,7 @@ export class EditPageManager {
             'Subtitle': '<h2>',
         };
 
-        const elementType = typeof type === 'function' ? type.name : type;
+        const elementType = this.getItemTypeClassName(element)
 
         let pageObject: any = {
             children: null,
@@ -248,10 +233,8 @@ export class EditPageManager {
         if (this.isSettingsObject(item)) {
             return 'Paragraph'
         }
-        // Нужно для получения типов. По типу определяется класс, а по классу отступы
-        // Родные отступы самих компонентов не учитывались из-за кучи обёрток библиотеки 
-        // А как прокинуть родные классы я не знал, поэтому класс - это имя компонента (item.type.name)
-        return item.type.name
+
+        return item.props?.type?.charAt(0).toUpperCase() + item.props?.type?.slice(1);
     };
 
     static deleteImage = (pageObject: PageObjects[], text='Новая строка') => {
@@ -323,7 +306,7 @@ export class EditPageManager {
         };
       
         try {
-            if (item && React.isValidElement(item) && item.props.children[0].type.name === 'Image') {
+            if (item && React.isValidElement(item) && item.props.children[0].props.type === 'image') {
                 const src = this.findProps(formatItem, 'src');
                 return this.deleteImage(pageObject, src);
             } 
@@ -343,8 +326,9 @@ export class EditPageManager {
 
         const createElement: ElementCreators = {
             link: (text: string, href?: string) => AddNewElement.createLink(text, href),
-            text: (text: string) => AddNewElement.createText(text),
-            boldText: (text: string) => AddNewElement.createBoldText(text),
+            paragraph: (text: string) => AddNewElement.createText(text),
+            strong: (text: string) => AddNewElement.createBoldText(text),
+            subtitle: (text: string) => AddNewElement.createBoldText(text),
             title: (text: string) => AddNewElement.createTitle(text),
             image: (src: string) => AddNewElement.createImage(src),
         }
@@ -354,6 +338,7 @@ export class EditPageManager {
         const elementIndex = this.findElement(oldText, pageObjects, typeField)[0]
         const newPageObjects = [...pageObjects]
         newPageObjects.splice(elementIndex, 1, newElement)
+
         return newPageObjects
     }
 

@@ -18,6 +18,8 @@ export interface PageObjects {
     src?:string;
 }
 
-
+export interface SettingsObject {
+    settings: boolean;
+}
 
 export default IconType;

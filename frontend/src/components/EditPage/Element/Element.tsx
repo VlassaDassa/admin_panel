@@ -1,32 +1,39 @@
+
 import { ChangeEvent, FC, useEffect, useState  } from 'react';
-import styles from './title.module.scss';
+import styles from './element.module.scss';
 import { PageObjects } from '../../../types';
 import { EditPageManager } from '../../../services';
 
 
 
-interface TitleProps {
-    text: string;
+interface ElementProps {
+    text?: string,
+    href?: string,
+    src?: string,
+    alt?: string,
+    type: string,
+    children?: React.ReactNode;
     pageObjects: PageObjects[];
     setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
 }
 
 interface Value {
     value?: string;
+    href?: string;
 }
 
 let debounceTimer: NodeJS.Timeout;
 
-
-
-const Title: FC<TitleProps> = ({ text, pageObjects, setPageObject }) => {
+const ElementDOM: FC<ElementProps> = ({ text, href, src, alt, type, children, pageObjects, setPageObject }) => {
     const [value, setValue] = useState<Value>({
         value: text,
+        href: href,
     });
 
     useEffect(() => {
         setValue({
-            value: text
+            value: text,
+            href: href,
         })
     }, [text]);
 
@@ -34,6 +41,7 @@ const Title: FC<TitleProps> = ({ text, pageObjects, setPageObject }) => {
     const changeInput = (e: ChangeEvent<HTMLTextAreaElement> ) => {
         setValue({
             value: e.target.value,
+            href: href,
         })
 
         e.target.style.height = 'auto';
@@ -49,10 +57,11 @@ const Title: FC<TitleProps> = ({ text, pageObjects, setPageObject }) => {
         }
 
         var args: SaveNodeArgs = {
-            oldText: text,
-            pageObjects: pageObjects,
+            oldText: text || '',
+            pageObjects,
+            href: href,
             newValue: e.target.value,
-            type: 'title'
+            type: type,
         };
         
         clearTimeout(debounceTimer);
@@ -63,14 +72,45 @@ const Title: FC<TitleProps> = ({ text, pageObjects, setPageObject }) => {
         }, 2000);
     }
 
+    if (type === 'image') {
+        return <img src={src} alt={alt} className={styles.image} />
+    }
+
+
+    if (children) {
+
+        switch (type) {
+            case 'paragraph':
+                return <>{ children }</>
+            
+            case 'subtitle':
+                return (
+                    <h2 className={styles.subtitle}>
+                        { children }
+                    </h2>
+                )
+            case 'strong':
+                return (
+                    <strong className={styles.strong}>
+                        { children }
+                    </strong>
+                )
+            default:
+                return null;
+        }
+    }
+
+
     return (
         <textarea 
             rows={1} 
             value={value.value} 
             onChange={changeInput} 
-            className={`${styles.stringInput} ${styles.title}`}
-        />
+            className={`${styles[type]}`}
+        >    
+        </textarea>
     )
 }
 
-export default Title;
+
+export default ElementDOM;

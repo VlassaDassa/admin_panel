@@ -24,7 +24,6 @@ const EditFile = () => {
             setPageObject(data)
         }
     }, [data, loading])
-
     
     if (error) {
         return <div>TODO | ERROR</div>
@@ -41,7 +40,7 @@ const EditFile = () => {
             />
 
             <Content
-                objects={RenderManager.renderObjects(pageObject, pageObject, setPageObject)} 
+                objects={RenderManager.renderObjects({ objects: pageObject, pageObjects: pageObject, setPageObject })} 
                 pageObject={pageObject} 
                 setPageObject={setPageObject}
             />

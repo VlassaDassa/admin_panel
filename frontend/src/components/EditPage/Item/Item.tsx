@@ -5,7 +5,7 @@ import Menu from '../Menu/Menu';
 
 import styles from './item.module.scss';
 import { EditPageManager } from '../../../services';
-import { PageObjects } from '../../../types';
+import { PageObjects, SettingsObject } from '../../../types';
 import draggableIco from './../../../assets/images/editPage/draggableIcon.svg';
 import settingsIco from './../../../assets/images/editPage/settingsIcon.svg';
 import plusIco from './../../../assets/images/general/plus.svg';
@@ -14,9 +14,6 @@ import plusIco from './../../../assets/images/general/plus.svg';
 
 
 
-interface SettingsObject {
-    settings: boolean;
-}
 
 interface ItemProps {
     provided: DraggableProvided;

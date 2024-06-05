@@ -6,7 +6,7 @@ import Portal from '../../general/Portal/Portal';
 
 import styles from './menu.module.scss';
 import { AddNewElement, EditPageManager } from '../../../services';
-import { PageObjects } from '../../../types';
+import { PageObjects, SettingsObject } from '../../../types';
 import linkIco from './../../../assets/images/editPage/linkIcon.svg';
 import textIco from './../../../assets/images/editPage/textIcon.svg';
 import imgIco from './../../../assets/images/editPage/imageIcon.svg';
@@ -16,10 +16,6 @@ import deleteIco from './../../../assets/images/editPage/deleteIcon.svg';
 
 
 
-
-interface SettingsObject {
-    settings: boolean;
-}
 
 interface MenuProps {
     menuRef: React.RefObject<HTMLUListElement>;

@@ -4,15 +4,13 @@ import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautif
 
 import Item from '../Item/Item';
 
-import { PageObjects } from '../../../types';
+import { PageObjects, SettingsObject } from '../../../types';
 import { EditPageManager } from '../../../services';
 import styles from './content.module.scss';
 
 
 
-interface SettingsObject {
-    settings: boolean;
-}
+
 
 interface ContentProps {
     objects: (React.ReactNode | SettingsObject)[];
@@ -46,11 +44,15 @@ const Content: FC<ContentProps> = ({ objects, pageObject, setPageObject }) => {
     const onDragEnd = (result: DropResult) => {
         if (!result.destination) return;
 
+        // Изменение видимого порядка, одноразово
+        // TODO попробовать убрать
         const newItems = Array.from(items);
         const [removed] = newItems.splice(result.source.index, 1);
         newItems.splice(result.destination.index, 0, removed);
         setItems(newItems);
 
+        // Изменение порядка элементов в главном массиве PageObjects
+        // Сохранение порядка
         const onlyReactNodes = newItems.filter(item => (item as ReactNode)?.hasOwnProperty('type')) as React.ReactNode[];
         const newPageObject = EditPageManager.saveOrder(onlyReactNodes)
         setPageObject([...newPageObject])
