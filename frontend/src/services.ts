@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, ReactElement } from 'react';
 import _ from 'lodash';
 
 import ElementDOM from './components/EditPage/Element/Element';
@@ -33,6 +33,8 @@ interface RenderObjectsArgs {
     pageObjects: PageObjects[];
     setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
 }
+
+
 
 export class MenuManager {
     data: NavigationField[];
@@ -128,6 +130,7 @@ export class MenuManager {
 }
 
 
+
 export class RenderManager {
     static types = {
         '<h1>': 'title',
@@ -171,8 +174,8 @@ export class RenderManager {
 }
 
 
-export class EditPageManager {
 
+export class EditPageManager {
     static getPageName = (objects: PageObjects[]): string => {
         let pageName = 'Без названия';
         for (const item of objects) {
@@ -184,8 +187,8 @@ export class EditPageManager {
         return pageName
     }
 
-    static extractProps = (element: any): any => {
-        const { props, type } = element;
+    static extractProps = (element: ReactElement): PageObjects => {
+        const { props } = element;
 
         const types: { [key: string]: string } = {
             'Paragraph': '<p>',
@@ -197,8 +200,8 @@ export class EditPageManager {
 
         const elementType = this.getItemTypeClassName(element)
 
-        let pageObject: any = {
-            children: null,
+        let pageObject: PageObjects = {
+            children: undefined,
             type: types[elementType] || elementType,
             class: props.className,
             text: props.text,
@@ -208,7 +211,7 @@ export class EditPageManager {
         };
 
         if (props.children && Array.isArray(props.children)) {
-            pageObject.children = props.children.map((child: any) => {
+            pageObject.children = props.children.map((child: ReactElement) => {
                 if (typeof child === 'object' && child !== null) {
                     return this.extractProps(child);
                 } else {
@@ -225,11 +228,11 @@ export class EditPageManager {
         return pageObject
     }
 
-    static isSettingsObject = (item: any): item is SettingsObject => {
+    static isSettingsObject = (item: SettingsObject | ReactElement): item is SettingsObject => {
         return (item as SettingsObject).settings !== undefined;
     }
 
-    static getItemTypeClassName = (item: any): string => {
+    static getItemTypeClassName = (item: SettingsObject | ReactElement): string => {
         if (this.isSettingsObject(item)) {
             return 'Paragraph'
         }
@@ -289,7 +292,7 @@ export class EditPageManager {
         return [counter, elem]
     }
 
-    static deleteNode = (item: ReactNode, pageObject: PageObjects[]) => {
+    static deleteNode = (item: ReactElement, pageObject: PageObjects[]) => {
         const formatItem = EditPageManager.extractProps(item);
       
         if (!formatItem) return pageObject;
@@ -306,7 +309,7 @@ export class EditPageManager {
         };
       
         try {
-            if (item && React.isValidElement(item) && item.props.children[0].props.type === 'image') {
+            if (item && React.isValidElement(item) && (item.props as any).children[0].props.type === 'image') {
                 const src = this.findProps(formatItem, 'src');
                 return this.deleteImage(pageObject, src);
             } 
@@ -342,7 +345,7 @@ export class EditPageManager {
         return newPageObjects
     }
 
-    static showType = (item: ReactNode | SettingsObject, pageObject: PageObjects[], typeOperation: string) => {
+    static showType = (item: ReactElement | SettingsObject, pageObject: PageObjects[], typeOperation: string) => {
         const types: { [key: string]: string } = {
             'link': '<a>',
             'Image': 'image',
@@ -372,15 +375,13 @@ export class EditPageManager {
         }
     }
 
-    static saveOrder = (newItems: ReactNode[]) => {
+    static saveOrder = (newItems: ReactElement[]) => {
         const pageObject = []
         for (let item of newItems) {
             const formatItem = EditPageManager.extractProps(item)
-            const condition = (formatItem.type == '<p>') && 
-                                    (formatItem.children && formatItem.children.length > 0) 
-                                    && (formatItem.children[0].type === 'Image')
+            const condition = (formatItem.children) && (formatItem.type == '<p>') && (formatItem.children[0].type === 'Image')
 
-            if (condition) {
+            if (condition && (formatItem.children)) {
                 formatItem.children[0].type = '<img>'
             }
             pageObject.push(formatItem)
@@ -391,8 +392,8 @@ export class EditPageManager {
 }
 
 
-export class AddNewElement {
 
+export class AddNewElement {
     static createLink = (text: string, href='#') => {
         return {
                 type: '<p>',
@@ -453,7 +454,7 @@ export class AddNewElement {
         }
     }
     
-    static newNode = (newElement: boolean, pageObject: PageObjects[], item: ReactNode | SettingsObject, type: string) => {
+    static newNode = (newElement: boolean, pageObject: PageObjects[], item: ReactElement | SettingsObject, type: string) => {
         interface ElementCreators {
             [key: string]: (text: string, href?: string) => PageObjects;
         }

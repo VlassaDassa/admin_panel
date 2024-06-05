@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from 'react';
+import { FC, ReactNode, useState, ReactElement } from 'react';
 import Draggable from 'react-draggable';
 
 import InputLink from '../InputLink/InputLink';
@@ -20,8 +20,8 @@ import deleteIco from './../../../assets/images/editPage/deleteIcon.svg';
 interface MenuProps {
     menuRef: React.RefObject<HTMLUListElement>;
     newStrMenu: boolean; // <- определяет в каком месте будет показано меню. Добавляет класс со свойством left, которое в начале строки
-    setItems: React.Dispatch<React.SetStateAction<(ReactNode | SettingsObject)[]>>;
-    item: ReactNode | SettingsObject;
+    setItems: React.Dispatch<React.SetStateAction<(ReactElement | SettingsObject)[]>>;
+    item: ReactElement | SettingsObject;
     pageObject: PageObjects[];
     setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
     inputHref: React.RefObject<HTMLInputElement>;
@@ -101,7 +101,7 @@ const Menu: FC<MenuProps> = ({ menuRef, newStrMenu, item, pageObject, setPageObj
         }
         
         const newPageObject = operationName === 'delete'
-          ? EditPageManager.deleteNode(item as ReactNode, pageObject)
+          ? EditPageManager.deleteNode(item as ReactElement, pageObject)
           : AddNewElement.newNode(newStrMenu, pageObject, item, operationName);
       
         if (newPageObject) {

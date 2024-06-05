@@ -23,7 +23,7 @@ export const getMenu = async (): Promise<NavigationField[]> => {
 export interface Result {
     success: boolean;
     message?: string;
-    data?: any;
+    data?: boolean;
 }
 
 export const updateMenu = async (data: NavigationField[]): Promise<Boolean> => {

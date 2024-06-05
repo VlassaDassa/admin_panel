@@ -1,5 +1,5 @@
 import { DraggableProvided } from 'react-beautiful-dnd';
-import { FC, ReactNode, useState, useEffect, useRef } from 'react';
+import { FC, ReactNode, useState, useEffect, useRef, ReactElement } from 'react';
 
 import Menu from '../Menu/Menu';
 
@@ -17,9 +17,9 @@ import plusIco from './../../../assets/images/general/plus.svg';
 
 interface ItemProps {
     provided: DraggableProvided;
-    item: ReactNode | SettingsObject;
+    item: ReactElement | SettingsObject;
     pageObject: PageObjects[];
-    setItems: React.Dispatch<React.SetStateAction<(React.ReactNode | SettingsObject)[]>>
+    setItems: React.Dispatch<React.SetStateAction<(React.ReactElement | SettingsObject)[]>>
     setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
 }
 

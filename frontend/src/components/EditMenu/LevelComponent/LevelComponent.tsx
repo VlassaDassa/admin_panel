@@ -20,7 +20,7 @@ interface LvlProps {
 }
 
 interface LevelConfig {
-    renderElement: (item: any, nextLevel: number) => JSX.Element;
+    renderElement: (item: NavigationField, nextLevel: number) => JSX.Element;
 }
 
 const LevelComponent: FC<LvlProps> = ({ item, level, data, setData }) => {

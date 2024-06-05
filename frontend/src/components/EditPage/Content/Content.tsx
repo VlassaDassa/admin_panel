@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactElement, ReactNode, useEffect, useState } from 'react';
 import React from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
@@ -13,13 +13,13 @@ import styles from './content.module.scss';
 
 
 interface ContentProps {
-    objects: (React.ReactNode | SettingsObject)[];
+    objects: (React.ReactElement | SettingsObject)[];
     pageObject: PageObjects[];
     setPageObject: React.Dispatch<React.SetStateAction<PageObjects[]>>;
 }
 
 const Content: FC<ContentProps> = ({ objects, pageObject, setPageObject }) => {
-    const [items, setItems] = useState<(React.ReactNode | SettingsObject)[]>(objects);
+    const [items, setItems] = useState<(React.ReactElement | SettingsObject)[]>(objects);
     
 
     useEffect(() => {
@@ -45,15 +45,13 @@ const Content: FC<ContentProps> = ({ objects, pageObject, setPageObject }) => {
         if (!result.destination) return;
 
         // Изменение видимого порядка, одноразово
-        // TODO попробовать убрать
         const newItems = Array.from(items);
         const [removed] = newItems.splice(result.source.index, 1);
         newItems.splice(result.destination.index, 0, removed);
         setItems(newItems);
 
-        // Изменение порядка элементов в главном массиве PageObjects
-        // Сохранение порядка
-        const onlyReactNodes = newItems.filter(item => (item as ReactNode)?.hasOwnProperty('type')) as React.ReactNode[];
+        // Сохранение порядка в главном PageObjects
+        const onlyReactNodes = newItems.filter(item => (item as ReactElement)?.hasOwnProperty('type')) as React.ReactElement[];
         const newPageObject = EditPageManager.saveOrder(onlyReactNodes)
         setPageObject([...newPageObject])
     };
