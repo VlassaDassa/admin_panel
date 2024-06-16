@@ -6,6 +6,9 @@ import Loader from '../../general/Loader/Loader';
 import Button from '../../general/Button/Button';
 import Portal from '../../general/Portal/Portal';
 import LevelComponent from '../LevelComponent/LevelComponent';
+import Message from '../../general/Message/Message';
+import InfoSection from '../../general/InfoSection/InfoSection';
+
 
 import { getMenu } from '../../../api/api';
 import { updateMenu } from '../../../api/api';
@@ -19,6 +22,8 @@ import { NavigationField } from '../../../types';
 
 
 const FirstLvl = () => {
+    const [successShow, setSuccessShow] = useState(false)
+    const [errorShow, setErrorShow] = useState(false)
     const [menu, setMenu] = useState<NavigationField[]>([])
     const { data, loading, error } = useAsyncRequest({
         requestFunction: getMenu
@@ -53,7 +58,24 @@ const FirstLvl = () => {
         const navManager = new MenuManager(menu);
         const curData = navManager.deleteNode('Новая страница', 'name')
         updateMenu(curData).then((response) => {
-            if (!response) {console.error(response)}
+            if (!response) {
+                setErrorShow(true)
+                setTimeout(() => {
+                    setErrorShow(false)
+                }, 1000)
+            }
+
+            setSuccessShow(true)
+            setTimeout(() => {
+                setSuccessShow(false)
+            }, 1000)
+        })
+        .catch((error) => {
+            console.error(error)
+            setErrorShow(true)
+            setTimeout(() => {
+                setErrorShow(false)
+            }, 1000)
         })
     }
     
@@ -63,7 +85,7 @@ const FirstLvl = () => {
     }
 
     if (error) {
-        return <div>TODO | ERROR</div>
+        return <InfoSection type='error' message='Ошибка на стороне сервера. Код ошибки - 505' />
     }
 
     return (
@@ -89,6 +111,9 @@ const FirstLvl = () => {
                 })
             }
             <NodePlus lvl={'lvl_1'} handler={addNode} />
+
+            <Message show={successShow}  message='Успешное сохранение' type='success' />
+            <Message show={errorShow}  message='Что-то пошло не так' type='error' />
         </>
     )
 }

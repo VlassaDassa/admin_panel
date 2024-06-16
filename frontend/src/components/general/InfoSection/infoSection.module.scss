@@ -1,0 +1,34 @@
+@import './../../../assets/styles/variables';
+
+
+
+
+.infoSection {
+    display: flex;
+    width: 70%;
+    font-size: 32px;
+    font-weight: $bold;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    position: absolute;
+    right: 0px;
+    top: 100px;
+}
+
+.center {
+    position: relative;
+    right: unset;
+    top: 200px;
+    width: 100%;
+}
+
+.error {
+    color: rgb(255, 125, 125);
+}
+
+
+.empty {
+    color: rgb(93, 93, 93);
+}

@@ -73,6 +73,14 @@ body {
 }
 
 
+.editColorsContainer {
+    display: flex;
+    align-items: center;
+    column-gap: 40px;
+
+    margin-top: 30px;
+}
+
 
 
 @media (max-width: 1450px) {

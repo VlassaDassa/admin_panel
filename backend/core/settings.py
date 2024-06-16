@@ -117,6 +117,8 @@ DEFAULT_FTP_ENCODING = 'windows-1251'
 DEFAULT_LOCAL_PATH = './download/'
 
 PATH_TO_JS = 'htdocs/assets/js/index.js'
+PATH_TO_CSS = 'htdocs/assets/styles/_variables.css'
 LOCAL_PATH_TO_JS = './download/index.js'
+LOCAL_PATH_TO_CSS = './download/_variables.css'
 
 MAIN_SERVER_URL = 'http://www.uob-konakovo.ru'

@@ -61,6 +61,7 @@ class FileManager:
     def __init__(self, *args, **kwargs):
         self.encoding = kwargs.get('encoding', settings.DEFAULT_FTP_ENCODING)
         self.local_path_to_js = kwargs.get('local_path_to_js', settings.LOCAL_PATH_TO_JS)
+        self.local_path_to_css = kwargs.get('local_path_to_css', settings.LOCAL_PATH_TO_CSS)
 
 
     def fix_json(self, json_str):
@@ -114,9 +115,33 @@ class FileManager:
             file.write(content)
 
 
+    def get_colors(self, var_name):
+        ''' Анализ CSS и получение значения переменной '''
+        with open(self.local_path_to_css, 'r', encoding=self.encoding) as file:
+            content = file.read()
+
+        try:
+            # Преобразуем имя переменной в формат с двойными тире
+            var_name_pattern = f'--{var_name.replace("_", "-")}'
+            pattern = rf'{var_name_pattern}\s*:\s*(.*?);'
+            match = re.search(pattern, content, re.DOTALL)
+              
+            if match:
+                return match.group(1).strip()
+            else:
+                print(f'[ОШИБКА]: Переменная {var_name_pattern} не найдена в файле {self.local_path_to_css}')
+                return None
+        except Exception as e:
+            print(f'[ОШИБКА]: Не удалось получить переменную {var_name_pattern} из файла {self.local_path_to_css}: {e}')
+            return None
+
+
+
 class PageManager:
     def __init__(self, *args, **kwargs):
         self.baseUrl = kwargs.get('baseUrl', settings.MAIN_SERVER_URL)
+        self.encoding = kwargs.get('encoding', settings.DEFAULT_FTP_ENCODING)
+
 
     def _getPage(self, pageName):
         url = f'{self.baseUrl}/{pageName}'
@@ -128,6 +153,7 @@ class PageManager:
             return soup
 
         raise ConnectionError     
+
 
     def getPageObject(self, pageName):
         page = self._getPage(pageName)
@@ -166,3 +192,67 @@ class PageManager:
             print(f'Страницу {pageName} невозможно распарсить')
 
         return parsed_elements
+    
+    
+    def makeHTMLmarkup(self, pageObjects) -> str:
+        types = {
+            '<h1>': 'title',
+            '<p>': 'newsParagraph',
+            '<strong>': 'newsStrong',
+            '<h2>': 'newsSubtitle',
+            '<img>': 'newsPageImage',
+            '<a>': 'newsLink',
+        }
+
+        def get_markup(item, types):
+            item_type = item['type']
+            class_name = types.get(item_type, '')
+            text = item.get('text', '')
+            href = item.get('href', '')
+            src = item.get('src', '')
+
+            if item_type == '<h1>':
+                return f'<h1 class="{class_name}">{text}</h1>\n'
+            elif item_type == '<h2>':
+                return f'<p class="{types["<p>"]}"><strong class="{types["<strong>"]}"><h2 class="{class_name}">{text}</h2></strong></p>\n'
+            elif item_type == '<strong>':
+                return f'<strong class="{class_name}">{text}</strong>\n'
+            elif item_type == '<p>':
+                return f'<p class="{class_name}">{text}</p>\n'
+            elif item_type == '<a>':
+                return f'<p class="{types["<p>"]}"><a href="{href}" class="{class_name}">{text}</a></p>\n'
+            elif item_type == '<img>':
+                return f'<p class="{types["<p>"]}"><img src="{src}" class="{class_name}" /></p>\n'
+            else:
+                return ''
+
+
+        def recurse_make_markup(item, types):
+            result = ''
+            if 'children' in item and item['children']:
+                for child in item['children']:
+                    result += recurse_make_markup(child, types)
+            else:
+                result += get_markup(item, types)
+            return result
+
+        result = ''.join(recurse_make_markup(item, types) for item in pageObjects)
+        return result
+
+
+    def injectMarkup(self, markup, local_path):
+        with open(local_path, 'r', encoding=self.encoding) as file:
+            content = file.read()
+
+        soup = BeautifulSoup(content, 'html.parser')
+        main_element = soup.find('main').find('div', class_='container')
+        if main_element:
+            main_element.clear()
+            new_content = BeautifulSoup(markup, 'html.parser')
+            for element in new_content:
+                main_element.append(element)
+
+        soup_str = soup.prettify(formatter=None)
+
+        with open(local_path, 'w', encoding=self.encoding) as file:
+            file.write(soup_str)

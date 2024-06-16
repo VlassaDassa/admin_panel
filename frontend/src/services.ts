@@ -1,9 +1,9 @@
-import React, { ReactNode, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import _ from 'lodash';
 
 import ElementDOM from './components/EditPage/Element/Element';
 
-import { NavigationField, PageObjects, SettingsObject } from "./types";
+import { NavigationField, PageObjects, SettingsObject, Color } from "./types";
 
 
 
@@ -489,4 +489,15 @@ export class AddNewElement {
         }
         return pageObject
     }
+}
+
+
+export class EditColors {
+    static findColorByType = (type: string, colors: Color[]) => {
+        const colorItem = colors.find((item) => {
+            return item.name === type
+        })
+
+        return colorItem?.color
+    } 
 }

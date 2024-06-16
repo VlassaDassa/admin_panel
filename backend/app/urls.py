@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('menu', views.MenuAPIView.as_view(), name='menu'),
-    path('page/<pageName>', views.EditPageAPIView.as_view(), name='page')
+    path('page/<pageName>', views.EditPageAPIView.as_view(), name='page'),
+    path('colors', views.EditColorsApiView.as_view(), name='colors')
 ]

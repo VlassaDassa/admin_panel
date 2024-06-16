@@ -1,0 +1,21 @@
+@import './../../../assets/styles/variables';
+
+
+
+.message {
+    
+    padding: 10px 25px;
+    border-radius: 5px;
+    position: absolute;
+    left: 50%;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.success {
+    background-color: #d7f8d8;
+    color: #212121;
+}

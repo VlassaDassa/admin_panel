@@ -1,4 +1,4 @@
-from rest_framework.views import APIView, Response
+from rest_framework.views import APIView, Response 
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -50,8 +50,8 @@ class MenuAPIView(APIView):
 
 class EditPageAPIView(APIView):
     
-
     def get(self, request, *args, **kwargs):
+        ''' Получение элементов страницы в виде объектов '''
         try:
             pageName = kwargs.get('pageName')
             pageManage = services.PageManager()
@@ -62,3 +62,62 @@ class EditPageAPIView(APIView):
         except Exception as _ex:
             print('Error: ',  _ex)
             return Response({'error': str(_ex)}, status=500)
+
+
+    def post(self, request, *args, **kwargs):
+        ''' Получение с клиента объектов страницы и сохранение их на сервере '''
+        try:
+            page_name = kwargs.get('pageName')
+            local_path = settings.DEFAULT_LOCAL_PATH + page_name
+            remote_path = f'htdocs/{page_name}' 
+
+            data = json.loads(request.body)['data']
+            page_manager = services.PageManager()
+            markup = page_manager.makeHTMLmarkup(data)
+
+            ftp_client = services.FTPClient()
+            ftp_client.download_file(remote_path)
+
+            page_manager.injectMarkup(markup, local_path)
+            ftp_client.upload_file(local_path, remote_path)
+
+            return Response({'success': True})
+
+        except Exception as _ex:
+            print('Error: ',  _ex)
+            return Response({'error': str(_ex)}, status=500)
+        
+
+
+class EditColorsApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        ''' Получение всех цветов '''
+        try:
+            ftp_client = services.FTPClient()
+            ftp_client.download_file(settings.PATH_TO_CSS)
+            ftp_client.close_connect()
+
+            # Получение всех необходимых переменных
+            colors = {
+                'base-color': ['base', 'Базовый'],
+                'accent-color': ['accent', 'Акцентный'],
+                'secondary-color': ['secondary', 'Второстепенный'],
+                'text-color': ['textColor', 'Цвет текста'],
+            }
+
+            send_data = []
+            for key in colors.keys():
+                send_data.append({
+                    'name': colors[key][0],
+                    'displayName': colors[key][1],
+                    'color': file_manager.get_colors(key),
+                })
+
+            return Response(send_data)
+
+        except Exception as _ex:
+            print('Error: ',  _ex)
+            return Response({'error': str(_ex)}, status=500)
+
+
+    

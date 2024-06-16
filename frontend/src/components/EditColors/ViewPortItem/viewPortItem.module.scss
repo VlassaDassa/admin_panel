@@ -1,0 +1,23 @@
+@import './../../../assets/styles/variables';
+
+
+
+.item {
+    display: flex;
+    column-gap: 10px;
+}
+
+.item + .item {
+    margin-top: 30px;
+} 
+
+
+.itemBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.textTitle {
+    width: 70%;
+}

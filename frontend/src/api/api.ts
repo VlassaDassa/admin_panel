@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { NavigationField, PageObjects } from '../types';
+import { NavigationField, PageObjects, Color } from '../types';
 
 
 
@@ -37,11 +37,33 @@ export const updateMenu = async (data: NavigationField[]): Promise<Boolean> => {
 };
 
 
-
 export const getPage = async (pageName: string): Promise<PageObjects[]> => {
     try {
         const response: AxiosResponse<PageObjects[]> = await axios.get(BASE_URL + 'page/' + pageName)
         return response.data
+    }
+    catch (error) {
+        console.error('Error fetching data: ', error)
+        throw error;
+    }
+} 
+
+
+export const savePageChanges = async (data: PageObjects[], pageName: string): Promise<Boolean> => {
+    try {
+        const response: AxiosResponse<Result> = await axios.post(BASE_URL + 'page/' + pageName, {data: data});
+        return response.data.success;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
+
+
+export const getColors = async (): Promise<Color[]> => {
+    try {
+        const { data }: AxiosResponse<Color[]> = await axios.get(BASE_URL + 'colors')
+        return data
     }
     catch (error) {
         console.error('Error fetching data: ', error)

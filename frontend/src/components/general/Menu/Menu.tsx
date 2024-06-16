@@ -26,17 +26,27 @@ const items: Items = {
             {
                 ico: fileIco,
                 displayName: 'Добавить файл',
-                name: 'add_file',
+                name: 'https://ftpweb.net',
             },
             {
                 ico: newsIco,
                 displayName: 'Новости',
-                name: 'edit_news',
+                name: 'http://www.uob-konakovo.ru/admin/',
             },
             {
                 ico: pageIco,
                 displayName: 'Редактировать страницу',
                 name: 'edit_page',
+            },
+            {
+                ico: pageIco,
+                displayName: 'Изменить цвета',
+                name: 'edit_colors',
+            },
+            {
+                ico: pageIco,
+                displayName: 'Изменить контакты в подвале',
+                name: 'edit_contact_footer',
             },
         ]
     },

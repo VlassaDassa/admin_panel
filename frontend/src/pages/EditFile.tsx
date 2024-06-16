@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import Loader from "../components/general/Loader/Loader";
 import Content from "../components/EditPage/Content/Content";
 import Header from "../components/EditPage/Header/Header";
+import InfoSection from "../components/general/InfoSection/InfoSection";
+import ErrorBoundary from "../components/general/ErrorBoundary/ErrorBoundary";
 
 import { getPage } from "../api/api";
 import { useAsyncRequest } from "../hooks/useRequest.hook";
@@ -26,7 +28,7 @@ const EditFile = () => {
     }, [data, loading])
     
     if (error) {
-        return <div>TODO | ERROR</div>
+        return <InfoSection type='error' message='Ошибка на стороне сервера. Код ошибки - 505' addClass="center" />
     }
 
     if (loading) {
@@ -36,14 +38,17 @@ const EditFile = () => {
     return (
         <div className="page page--editFile">
             <Header
-                pageName={EditPageManager.getPageName(pageObject)} 
+                pageName={EditPageManager.getPageName(pageObject)}
+                pageObject={pageObject}
             />
 
-            <Content
-                objects={RenderManager.renderObjects({ objects: pageObject, pageObjects: pageObject, setPageObject })} 
-                pageObject={pageObject} 
-                setPageObject={setPageObject}
-            />
+            <ErrorBoundary>
+                <Content
+                    objects={RenderManager.renderObjects({ objects: pageObject, pageObjects: pageObject, setPageObject })} 
+                    pageObject={pageObject} 
+                    setPageObject={setPageObject}
+                />
+            </ErrorBoundary>
         </div>
     )
 }

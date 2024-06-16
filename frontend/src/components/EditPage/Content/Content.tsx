@@ -1,4 +1,4 @@
-import { FC, ReactElement, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import React from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
@@ -19,43 +19,47 @@ interface ContentProps {
 }
 
 const Content: FC<ContentProps> = ({ objects, pageObject, setPageObject }) => {
-    const [items, setItems] = useState<(React.ReactElement | SettingsObject)[]>(objects);
-    
+    const [items, setItems] = useState<(any)[]>(objects);
 
     useEffect(() => {
         if (objects) {
-            const newObject = [...objects, {'settings': true }]
-            setItems(newObject)
+            const newObjects = objects.map((item, index) => ({
+                ...item,
+                id: `item_${index}` 
+            }));
+            newObjects.push({ id: 'settings_id', settings: true });
+            setItems(newObjects);
         }
 
-        // При редактировании textareas изменяется высота
-        document.addEventListener('DOMNodeInserted', function(event) {
+        // Регулировка высоты textarea при вставке с использованием MutationObserver
+        const observer = new MutationObserver(() => {
             const textareas = document.querySelectorAll('textarea');
             textareas.forEach(textarea => {
                 textarea.style.height = 'auto';
                 textarea.style.height = `${textarea.scrollHeight}px`;
             });
         });
+        observer.observe(document, { subtree: true, childList: true });
 
-    }, [objects])
-
-
+        return () => {
+            observer.disconnect();
+        };
+    }, [objects]);
 
     const onDragEnd = (result: DropResult) => {
         if (!result.destination) return;
 
-        // Изменение видимого порядка, одноразово
+        // Временное обновление порядка элементов
         const newItems = Array.from(items);
         const [removed] = newItems.splice(result.source.index, 1);
         newItems.splice(result.destination.index, 0, removed);
         setItems(newItems);
 
-        // Сохранение порядка в главном PageObjects
-        const onlyReactNodes = newItems.filter(item => (item as ReactElement)?.hasOwnProperty('type')) as React.ReactElement[];
-        const newPageObject = EditPageManager.saveOrder(onlyReactNodes)
-        setPageObject([...newPageObject])
+        // Сохранение порядка в основном объекте PageObjects
+        const onlyReactElements = newItems.filter(item => (item as ReactElement)?.hasOwnProperty('type')) as React.ReactElement[];
+        const newPageObject = EditPageManager.saveOrder(onlyReactElements);
+        setPageObject([...newPageObject]);
     };
-
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -67,17 +71,16 @@ const Content: FC<ContentProps> = ({ objects, pageObject, setPageObject }) => {
                         ref={provided.innerRef}
                     >
                         {items.map((item, index) => (
-                            <Draggable key={index} draggableId={String(index)} index={index}>
+                            <Draggable key={item.id} draggableId={item.id} index={index}>
                                 {(provided) => (
                                     <Item 
-                                        item={item} 
+                                        item={item as any} 
                                         pageObject={pageObject} 
                                         provided={provided} 
                                         setItems={setItems} 
                                         setPageObject={setPageObject}
                                     />
                                 )}
-                                
                             </Draggable>
                         ))}
                     </div>

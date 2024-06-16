@@ -1,6 +1,5 @@
 import { FC } from 'react';
 
-import Button from '../../general/Button/Button';
 import PgnButton from '../PgnButton/PgnButton';
 
 import styles from './footer.module.scss';
@@ -13,9 +12,6 @@ interface FooterProps {
 
 const Footer: FC<FooterProps> = ({ setCurPage, countPages }) => {
 
-    const addPage = () => {
-        console.log('Add page')
-    }
 
     const nextPage = () => {
         setCurPage((prev) => {
@@ -37,8 +33,6 @@ const Footer: FC<FooterProps> = ({ setCurPage, countPages }) => {
 
     return (
         <div className={styles.footer}>
-            <Button text={'Добавить'} handler={addPage} />
-
             <div className={styles.pgnButtons}>
                 <PgnButton type='left' handler={prevPage} />
                 <PgnButton type='right' handler={nextPage} />

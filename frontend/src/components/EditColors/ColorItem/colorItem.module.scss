@@ -1,0 +1,42 @@
+@import './../../../assets/styles/variables';
+
+
+
+.item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    column-gap: 20px;
+}
+
+.item {
+    margin-top: 20px;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: $medium;
+}
+
+.color {
+    width: 40px;
+    height: 40px;
+
+    box-shadow: 0px 0px 4px 0px rgba(34, 60, 80, 0.2);
+    border-radius: 5px;
+
+    cursor: pointer;
+    transition: opacity ease-in-out 0.2s;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+
+.colorPicker {
+    position: absolute !important;
+    left: 180px;
+    top: 40px;
+    z-index: 3;
+}

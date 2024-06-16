@@ -4,12 +4,12 @@ import Header from "../components/ChoicePage/Header/Header";
 import Content from "../components/ChoicePage/Content/Content";
 import Footer from "../components/ChoicePage/Footer/Footer";
 import Loader from "../components/general/Loader/Loader";
+import InfoSection from "../components/general/InfoSection/InfoSection";
 
 import { useAsyncRequest } from "../hooks/useRequest.hook";
 import { MenuManager } from "../services";
 import { getMenu } from "../api/api";
 import { NavigationField } from "../types";
-
 
 
 
@@ -43,17 +43,20 @@ const ChoicePage = () => {
     }, [loading, data, findName])
 
 
+
     if (error) {
-        return <div>TODO| ERROR</div>
+        return <InfoSection type='error' message='Ошибка на стороне сервера. Код ошибки - 505' />
+        
     }
 
+    
     return (
        <div className="page page--choicePage">
             <Header setFindName={setFindName} />
 
             {
                 !loading && pages.length === 0 ?
-                    <div>TODO | Empty</div> 
+                    <InfoSection type='empty' message='Страницы отсутствуют' />
                 :
                      null
             }
@@ -69,7 +72,14 @@ const ChoicePage = () => {
                         setCountPages={setCountPages} 
                     />
             }
-            <Footer setCurPage={setCurPage} countPages={countPages} />
+
+            {
+                !loading && pages.length === 0 ?
+                    null
+                :
+                    <Footer setCurPage={setCurPage} countPages={countPages} />
+            }
+           
        </div>
     )
 }

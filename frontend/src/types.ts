@@ -22,4 +22,15 @@ export interface SettingsObject {
     settings: boolean;
 }
 
+
+export interface Color {
+    name: string,
+    displayName: string,
+    color: string,
+}
+
+export interface Colors {
+    colors: Color[]
+}
+
 export default IconType;
