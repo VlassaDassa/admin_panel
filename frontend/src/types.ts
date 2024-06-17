@@ -27,6 +27,7 @@ export interface Color {
     name: string,
     displayName: string,
     color: string,
+    dark_theme: string,
 }
 
 export interface Colors {

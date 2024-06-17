@@ -116,25 +116,43 @@ class FileManager:
 
 
     def get_colors(self, var_name):
-        ''' Анализ CSS и получение значения переменной '''
         with open(self.local_path_to_css, 'r', encoding=self.encoding) as file:
             content = file.read()
 
         try:
-            # Преобразуем имя переменной в формат с двойными тире
             var_name_pattern = f'--{var_name.replace("_", "-")}'
             pattern = rf'{var_name_pattern}\s*:\s*(.*?);'
-            match = re.search(pattern, content, re.DOTALL)
-              
-            if match:
-                return match.group(1).strip()
+            matches = re.findall(pattern, content, re.DOTALL)
+            
+            if matches:
+                return [match.strip() for match in matches]
             else:
-                print(f'[ОШИБКА]: Переменная {var_name_pattern} не найдена в файле {self.local_path_to_css}')
+                print(f'[ERROR]: Variable {var_name_pattern} not found in file {self.local_path_to_css}')
                 return None
         except Exception as e:
-            print(f'[ОШИБКА]: Не удалось получить переменную {var_name_pattern} из файла {self.local_path_to_css}: {e}')
+            print(f'[ERROR]: Could not retrieve variable {var_name_pattern} from file {self.local_path_to_css}: {e}')
             return None
+        
+    def saveColors(self, newColors):
+        with open(self.local_path_to_css, 'r', encoding='windows-1251') as file:
+            content = file.read()   
 
+        lines = content.split('\n')
+
+        for item in newColors:
+            for i, line in enumerate(lines):
+                if '--' + item['name'] + ':' in line:
+                    lines[i] = '--' + item['name'] + ': ' + item['color'] + ';'
+                    for j, line2 in enumerate(lines):
+                        if '--' + item['name'] + ':' in line2 and i != j:
+                            lines[j] = '--' + item['name'] + ': ' + item['dark_theme'] + ';'
+                            break
+                    break
+
+        new_file_content = '\n'.join(lines)
+
+        with open(self.local_path_to_css, 'w', encoding='windows-1251') as file:
+            file.write(new_file_content)
 
 
 class PageManager:

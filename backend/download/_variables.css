@@ -1,10 +1,10 @@
 :root {
     /* Colors */
-    --base-color: rgb(255, 255, 255);
-    --secondary-color: #F6F6F6;
-    --text-color: #2F2F2F;
+--base-color: rgb(255, 255, 255);
+--secondary-color: #F6F6F6;
+--text-color: #2F2F2F;
     --light-text-color: #2F2F2F;
-    --accent-color: #2F82FF;
+--accent-color: #2F82FF;
     --hover-accent: #4992ff;
     --selected-accent-color: #226AD6;
     --border-bottom: rgb(47, 47, 47, 0.5);
@@ -43,10 +43,10 @@
 
   
 [data-theme='dark'] {
-    --base-color: #212121;
-    --secondary-color: #2F2F2F;
-    --text-color: #C9C9C9;
-    --accent-color: #4744C6;
+--base-color: #212121;
+--secondary-color: #2F2F2F;
+--text-color: #C9C9C9;
+--accent-color: #4744C6;
     --hover-accent: #5855E4;
     --light-text-color: #C9C9C9;
     --selected-accent-color: #2D2BAE;

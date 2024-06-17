@@ -4,7 +4,7 @@
 
 .button {
     background: $accent-color;
-    color: white;
+    color: $base-color;
     padding: 10px 20px;
     border-radius: 10px;
 
@@ -25,4 +25,16 @@
 .saveChanges {
     background: $base-color;
     color: $accent-color;
+}
+
+.themeChange {
+    background-color: $text-color;
+    color: $base-color;
+}
+
+
+.lightTheme {
+    background-color: $base-color;
+    color: $text-color;
+    box-shadow: 0px 0px 4px 0px rgba(34, 60, 80, 0.2);
 }

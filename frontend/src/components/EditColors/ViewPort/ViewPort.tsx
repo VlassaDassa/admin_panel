@@ -8,19 +8,21 @@ import { Colors } from '../../../types';
 
 
 
+interface ColorsWithTheme extends Colors {
+    darkTheme: boolean;
+}
 
-
-const ViewPort: FC<Colors> = ({ colors }) => {
+const ViewPort: FC<ColorsWithTheme> = ({ colors, darkTheme }) => {
     return (
         <div className={styles.viewPort}>
-            <ViewPortTopSide colors={colors} />
+            <ViewPortTopSide colors={colors} darkTheme={darkTheme} />
 
-            <div className={styles.line} style={{ background: EditColors.findColorByType('accent', colors) }}></div>
+            <div className={styles.line} style={{ background: EditColors.findColorByType('accent', colors, darkTheme) }}></div>
 
-            <div className={styles.body} style={{ background: EditColors.findColorByType('base', colors) }}>
+            <div className={styles.body} style={{ background: EditColors.findColorByType('base', colors, darkTheme) }}>
                 {
                     Array.from({ length: 3 }, (_, index) => (
-                        <ViewPortItem key={index} colors={colors} />
+                        <ViewPortItem key={index} colors={colors} darkTheme={darkTheme} />
                     ))
                 }
             </div>

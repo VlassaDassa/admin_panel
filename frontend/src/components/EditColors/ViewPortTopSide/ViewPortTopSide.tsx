@@ -5,12 +5,13 @@ import styles from './viewPortTopSide.module.scss';
 import skeletonImage from './../../../assets/images/editColors/skeletonImage.svg';
 import { Colors } from '../../../types';
 
+interface ViewPortTopSideWithTheme extends Colors {
+    darkTheme: boolean;
+  }
 
-
-
-const ViewPortTopSide: FC<Colors> = ({ colors }) => {
+const ViewPortTopSide: FC<ViewPortTopSideWithTheme> = ({ colors, darkTheme }) => {
     return (
-        <div className={styles.topSide} style={{ background: EditColors.findColorByType('secondary', colors) }}>
+        <div className={styles.topSide} style={{ background: EditColors.findColorByType('secondary', colors, darkTheme) }}>
             <img src={skeletonImage} className={`${styles.image} ${styles.imageTopSide}`} alt="skeleton image" />
         </div>
     )

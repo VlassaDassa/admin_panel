@@ -90,6 +90,16 @@ class EditPageAPIView(APIView):
 
 
 class EditColorsApiView(APIView):
+    def __init__(self, *args, **kwargs):
+        # Получение всех необходимых переменных
+        self.colors = {
+            'base-color': ['base', 'Базовый'],
+            'accent-color': ['accent', 'Акцентный'],
+            'secondary-color': ['secondary', 'Второстепенный'],
+            'text-color': ['textColor', 'Цвет текста'],
+        }
+    
+
     def get(self, request, *args, **kwargs):
         ''' Получение всех цветов '''
         try:
@@ -97,20 +107,13 @@ class EditColorsApiView(APIView):
             ftp_client.download_file(settings.PATH_TO_CSS)
             ftp_client.close_connect()
 
-            # Получение всех необходимых переменных
-            colors = {
-                'base-color': ['base', 'Базовый'],
-                'accent-color': ['accent', 'Акцентный'],
-                'secondary-color': ['secondary', 'Второстепенный'],
-                'text-color': ['textColor', 'Цвет текста'],
-            }
-
             send_data = []
-            for key in colors.keys():
+            for key in self.colors.keys():
                 send_data.append({
-                    'name': colors[key][0],
-                    'displayName': colors[key][1],
-                    'color': file_manager.get_colors(key),
+                    'name': self.colors[key][0],
+                    'displayName': self.colors[key][1],
+                    'color': file_manager.get_colors(key)[0],
+                    'dark_theme': file_manager.get_colors(key)[1],
                 })
 
             return Response(send_data)
@@ -119,5 +122,34 @@ class EditColorsApiView(APIView):
             print('Error: ',  _ex)
             return Response({'error': str(_ex)}, status=500)
 
+
+    @csrf_exempt
+    def post(self, request, *args, **kwargs):
+        ''' Получение с клиента новой цветовой схемы '''
+        try:
+            # Изменение названий цветов
+            new_data = []
+            data = json.loads(request.body)['data']
+            for i in data:
+                for ii in self.colors:
+                    if i['name'] == self.colors[ii][0]:
+                        new_data.append({
+                            'name': ii,
+                            'color': i['color'],
+                            'dark_theme': i['dark_theme']
+                        })
+            
+            file_manager.saveColors(new_data)
+            
+            # Отправка файла
+            ftp_client = services.FTPClient()
+            ftp_client.upload_file(settings.LOCAL_PATH_TO_CSS, settings.PATH_TO_CSS)
+            ftp_client.close_connect()
+            
+            return Response({'success': True}, status=status.HTTP_200_OK)
+
+        except Exception as _ex:
+            print('Error: ',  _ex)
+            return Response({'error': str(_ex)}, status=500)
 
     

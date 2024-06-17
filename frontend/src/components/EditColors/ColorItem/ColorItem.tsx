@@ -13,24 +13,29 @@ interface ColorItemProps {
     color: Color;
     colors: Color[];
     setColors: Dispatch<SetStateAction<Color[]>>;
+    darkTheme: boolean;
 }
 
-const ColorItem: FC<ColorItemProps> = ({ color, colors, setColors }) => {
+const ColorItem: FC<ColorItemProps> = ({ color, colors, setColors, darkTheme }) => {
     const [showPicker, setShowPicker] = useState(false)
     const [curColor, setCurColor] = useState(color.color)
     const pickerRef = useRef<HTMLDivElement>(null);
 
 
-
     const changeColor = (newColor: string) => {
         colors.forEach((item) => {
             if (item.name == color.name) {
-                item.color = newColor
-                setCurColor(item.color)
+                if (darkTheme) {
+                    item.dark_theme = newColor
+                }
+                else {
+                    item.color = newColor
+                }
+                setCurColor(newColor)
             }
         })
+        
         const newColors = [...colors]
-
         setColors(newColors)
     }
 
@@ -40,7 +45,17 @@ const ColorItem: FC<ColorItemProps> = ({ color, colors, setColors }) => {
     }    
 
     useEffect(() => {
-        
+        // Сброс colors
+        colors.forEach((item) => {
+            if (item.name == color.name) {
+                if (darkTheme) {
+                    setCurColor(item.dark_theme)
+                }
+                else {
+                    setCurColor(item.color)
+                }
+            }
+        })
         
         // Для закрытия colorPicker при клике в любом месте
         const handleClickOutside = (event: MouseEvent) => {
@@ -53,7 +68,7 @@ const ColorItem: FC<ColorItemProps> = ({ color, colors, setColors }) => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [colors, darkTheme]);
 
     return (
         <div className={styles.item}>

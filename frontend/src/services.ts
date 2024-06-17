@@ -493,11 +493,11 @@ export class AddNewElement {
 
 
 export class EditColors {
-    static findColorByType = (type: string, colors: Color[]) => {
+    static findColorByType = (type: string, colors: Color[], darkTheme: boolean) => {
         const colorItem = colors.find((item) => {
             return item.name === type
         })
 
-        return colorItem?.color
+        return darkTheme ? colorItem?.dark_theme : colorItem?.color 
     } 
 }

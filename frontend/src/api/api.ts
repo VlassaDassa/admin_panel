@@ -70,3 +70,15 @@ export const getColors = async (): Promise<Color[]> => {
         throw error;
     }
 } 
+
+
+export const saveColors = async (data: Color[]): Promise<Boolean> => {
+    try {
+        const response: AxiosResponse<Result> = await axios.post(BASE_URL + 'colors', {data: data})
+        return response.data.success
+    }
+    catch (error) {
+        console.error('Error fetching data: ', error)
+        throw error;
+    }
+} 
