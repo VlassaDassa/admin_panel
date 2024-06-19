@@ -1,0 +1,28 @@
+@import './../../../assets/styles/variables';
+
+
+
+.field {
+    display: flex;
+    flex-direction: column;
+
+    row-gap: 10px;
+}
+
+.input {
+    background: $base-color;
+    box-shadow: 0px 0px 4px 0px rgba(34, 60, 80, 0.2);
+    border-radius: 5px;
+    padding: 0 10px;
+
+    height: 40px;
+    width: 280px;
+
+    font-size: 20px;
+    color: $text-color;
+}
+
+.label {
+    font-size: 20px;
+    font-weight: $medium;
+}

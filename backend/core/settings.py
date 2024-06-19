@@ -118,7 +118,12 @@ DEFAULT_LOCAL_PATH = './download/'
 
 PATH_TO_JS = 'htdocs/assets/js/index.js'
 PATH_TO_CSS = 'htdocs/assets/styles/_variables.css'
+PATH_TO_INCLUDE = 'htdocs/include.php' # <- Хранит в себе header и footer разметку
+PATH_TO_INDEX = 'htdocs/index.php' 
+
 LOCAL_PATH_TO_JS = './download/index.js'
 LOCAL_PATH_TO_CSS = './download/_variables.css'
+LOCAL_PATH_TO_INCLUDE = './download/include.php' # <- Хранит в себе header и footer разметку
+LOCAL_PATH_TO_INDEX = './download/index.php' 
 
 MAIN_SERVER_URL = 'http://www.uob-konakovo.ru'

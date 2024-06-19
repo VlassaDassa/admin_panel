@@ -38,7 +38,7 @@ const ElementDOM: FC<ElementProps> = ({ text, href, src, alt, type, children, pa
     }, [text]);
 
 
-    const changeInput = (e: ChangeEvent<HTMLTextAreaElement> ) => {
+    const changeInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setValue({
             value: e.target.value,
             href: href,

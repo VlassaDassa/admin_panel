@@ -9,6 +9,7 @@ import Layout from "./components/general/Layout";
 import DelayedRoute from "./components/general/GlobalLoader/DelayedRouteProps ";
 import GlobalLoader from "./components/general/GlobalLoader/GlobalLoader";
 import EditColors from './pages/EditColors';
+import EditContactFooter from './pages/EditContactFooter';
 
 
 
@@ -39,10 +40,10 @@ const AppRouter: React.FC = () => {
                     }
                 >
                     <Route
-                        index
+                        path=""
                         element={
                             <DelayedRoute startLoading={startLoading} stopLoading={stopLoading}>
-                                <Index />
+                                <EditMenu />
                             </DelayedRoute>
                         }
                     />
@@ -80,14 +81,14 @@ const AppRouter: React.FC = () => {
                         }
                     />
 
-                    {/* <Route
+                    <Route
                         path="edit_contact_footer"
                         element={
                             <DelayedRoute startLoading={startLoading} stopLoading={stopLoading}>
-                                <EditFile />
+                                <EditContactFooter />
                             </DelayedRoute>
                         }
-                    /> */}
+                    />
                 </Route>
             </Routes>
         </Router>

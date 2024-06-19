@@ -786,6 +786,11 @@ $(document).ready(() => {
 ;
 ;
 ;
+;
+;
+;
+;
+;
 // На всякий
     try {
         navigations = JSON.parse(navigations_str)

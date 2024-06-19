@@ -1,0 +1,38 @@
+@import './../../../assets/styles/variables';
+
+
+
+
+
+.container {
+    position: relative;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+
+    cursor: pointer;
+}
+
+.input {
+    background: $base-color;
+    box-shadow: 0px 0px 10px 0px rgba(34, 60, 80, 0.4);
+    border-radius: 5px;
+    padding: 0 10px;
+    height: 40px;
+    width: 280px;
+    font-size: 20px;
+    color: $text-color;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+

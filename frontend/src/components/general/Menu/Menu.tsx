@@ -8,6 +8,8 @@ import menuIco from './../../../assets/images/menu/menu.svg';
 import fileIco from './../../../assets/images/menu/file.svg';
 import newsIco from './../../../assets/images/menu/news.svg';
 import pageIco from './../../../assets/images/menu/page.svg';
+import paletteIco from './../../../assets/images/menu/palette.svg';
+import contactIco from './../../../assets/images/menu/phone.svg';
 
 import { Items, Section } from './types';
 
@@ -39,12 +41,12 @@ const items: Items = {
                 name: 'edit_page',
             },
             {
-                ico: pageIco,
+                ico: paletteIco,
                 displayName: 'Изменить цвета',
                 name: 'edit_colors',
             },
             {
-                ico: pageIco,
+                ico: contactIco,
                 displayName: 'Изменить контакты в подвале',
                 name: 'edit_contact_footer',
             },

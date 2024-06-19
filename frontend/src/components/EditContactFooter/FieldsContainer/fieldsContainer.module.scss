@@ -1,0 +1,11 @@
+@import './../../../assets/styles/variables';
+
+
+
+.container {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+    grid-gap: 40px;
+
+    margin: 50px 0;
+}

@@ -85,12 +85,6 @@ const Buttons: FC<ButtonsProps> = ({ colors, setColors, darkTheme, setDarkTheme 
     }
 
     const themeChangeHandler = () => {
-        // const newColors = [...colors]
-        // newColors.forEach(theme => {
-        //     [theme.color, theme.dark_theme] = [theme.dark_theme, theme.color];
-        // });
-        // setColors(newColors)
-
         setDarkTheme(prev => !prev)
     }
    

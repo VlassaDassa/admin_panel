@@ -82,3 +82,33 @@ export const saveColors = async (data: Color[]): Promise<Boolean> => {
         throw error;
     }
 } 
+
+
+interface FooterContacts {
+    src: string,
+    href: string,
+    phone_number: string,
+}
+
+export const getFooterContacts = async (): Promise<FooterContacts> => {
+    try {
+        const response: AxiosResponse<FooterContacts> = await axios.get(BASE_URL + 'footer_contacts')
+        return response.data
+    }
+    catch (error) {
+        console.error('Error fetching data: ', error)
+        throw error;
+    }
+} 
+
+
+export const saveFooterContacts = async (data: FooterContacts): Promise<Boolean> => {
+    try {
+        const response: AxiosResponse<Result> = await axios.post(BASE_URL + 'footer_contacts', {data: data})
+        return response.data.success
+    }
+    catch (error) {
+        console.error('Error fetching data: ', error)
+        throw error;
+    }
+} 

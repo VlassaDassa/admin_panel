@@ -153,3 +153,41 @@ class EditColorsApiView(APIView):
             return Response({'error': str(_ex)}, status=500)
 
     
+
+class FooterContactsApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        ''' Получение контактных данных с подвала '''
+        try:
+            ftp_client = services.FTPClient()
+            ftp_client.download_file(settings.PATH_TO_INCLUDE)
+            ftp_client.download_file(settings.PATH_TO_INDEX)
+            ftp_client.close_connect()
+
+            send_data = file_manager.get_footer_contacts(settings.LOCAL_PATH_TO_INCLUDE)
+            return Response(send_data)
+
+        except Exception as _ex:
+            print('Error: ',  _ex)
+            return Response({'error': str(_ex)}, status=500)
+        
+
+    @csrf_exempt
+    def post(self, request, *args, **kwargs):
+        ''' Получение с клиента новых контактных данных '''
+        try:
+            # Изменение контактных данных
+            data = json.loads(request.body)['data']
+            file_manager.update_footer_contacts(settings.LOCAL_PATH_TO_INCLUDE, data)
+            file_manager.update_footer_contacts(settings.LOCAL_PATH_TO_INDEX, data)
+            
+            # Отправка файла
+            ftp_client = services.FTPClient()
+            ftp_client.upload_file(settings.LOCAL_PATH_TO_INCLUDE, settings.PATH_TO_INCLUDE)
+            ftp_client.upload_file(settings.LOCAL_PATH_TO_INDEX, settings.PATH_TO_INDEX)
+            ftp_client.close_connect()
+            
+            return Response({'success': True}, status=status.HTTP_200_OK)
+
+        except Exception as _ex:
+            print('Error: ',  _ex)
+            return Response({'error': str(_ex)}, status=500)

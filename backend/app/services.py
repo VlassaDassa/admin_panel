@@ -133,6 +133,7 @@ class FileManager:
             print(f'[ERROR]: Could not retrieve variable {var_name_pattern} from file {self.local_path_to_css}: {e}')
             return None
         
+
     def saveColors(self, newColors):
         with open(self.local_path_to_css, 'r', encoding='windows-1251') as file:
             content = file.read()   
@@ -153,6 +154,113 @@ class FileManager:
 
         with open(self.local_path_to_css, 'w', encoding='windows-1251') as file:
             file.write(new_file_content)
+
+
+    def get_footer_contacts(self, file_path):
+        with open(file_path, 'r', encoding=self.encoding) as file:
+            content = file.read()
+                
+            soup = BeautifulSoup(content, 'html.parser')
+            
+            contact_div = soup.find('div', class_='contacts')
+            if not contact_div:
+                print(f'[ERROR]: <div class="contacts"> not found in file {self.file_path}')
+                return None
+            
+            img_tag = contact_div.find('img', class_='socialNetWorkIcon')
+            if img_tag:
+                src = img_tag.get('src')
+            else:
+                src = None
+
+            a_tag = contact_div.find('a')
+            if a_tag:
+                href = a_tag.get('href')
+            else:
+                href = None
+
+            phone_number_tag = contact_div.find('p', class_='contactsPhoneNumber')
+            if phone_number_tag:
+                phone_number = phone_number_tag.get_text().strip()
+            else:
+                phone_number = None
+
+            return {
+                'src': src,
+                'href': href,
+                'phone_number': phone_number
+            }
+
+
+
+    # def update_footer_contacts(self, file_path, new_data):
+    #     with open(file_path, 'r', encoding=self.encoding) as file:
+    #         content = file.read()
+
+    #     soup = BeautifulSoup(content, 'html.parser')
+        
+    #     contact_div = soup.find('div', class_='contacts')
+    #     if not contact_div:
+    #         print(f'[ERROR]: <div class="contacts"> not found in file {file_path}')
+    #         return None
+
+    #     img_tag = contact_div.find('img', class_='socialNetWorkIcon')
+    #     if img_tag and 'src' in new_data:
+    #         img_tag['src'] = new_data['src']
+
+    #     a_tag = contact_div.find('a')
+    #     if a_tag and 'href' in new_data:
+    #         a_tag['href'] = new_data['href']
+
+    #     phone_number_tag = contact_div.find('p', class_='contactsPhoneNumber')
+    #     if phone_number_tag and 'phone_number' in new_data:
+    #         phone_number_tag.string = new_data['phone_number']
+
+    #     updated_content = str(soup)
+
+    #     updated_content = re.sub(r'\?&gt;', r'?>', updated_content)
+
+    #     with open(file_path, 'w', encoding=self.encoding) as file:
+    #         file.write(updated_content)
+
+    def update_footer_contacts(self, file_path, new_data):
+        with open(file_path, 'r', encoding=self.encoding) as file:
+            content = file.read()
+
+        start_index = content.find('<div class="contacts"')
+        if start_index == -1:
+            print(f'[ERROR]: <div class="contacts"> not found in file {file_path}')
+            return None
+        
+        end_index = content.find('</div>', start_index)
+        if end_index == -1:
+            print(f'[ERROR]: </div> not found after <div class="contacts"> in file {file_path}')
+            return None
+
+        contact_section = content[start_index:end_index + len('</div>')]
+
+        soup = BeautifulSoup(contact_section, 'html.parser')
+
+        img_tag = soup.find('img', class_='socialNetWorkIcon')
+        if img_tag and 'src' in new_data:
+            img_tag['src'] = new_data['src']
+
+        a_tag = soup.find('a')
+        if a_tag and 'href' in new_data:
+            a_tag['href'] = new_data['href']
+
+        phone_number_tag = soup.find('p', class_='contactsPhoneNumber')
+        if phone_number_tag and 'phone_number' in new_data:
+            phone_number_tag.string = new_data['phone_number']
+
+        updated_contact_section = str(soup)
+
+        updated_content = content[:start_index] + updated_contact_section + content[end_index + len('</div>'):]
+
+        with open(file_path, 'w', encoding=self.encoding) as file:
+            file.write(updated_content)
+
+
 
 
 class PageManager:

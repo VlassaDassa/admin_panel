@@ -114,12 +114,16 @@ const Menu: FC<MenuProps> = ({ menuRef, newStrMenu, item, pageObject, setPageObj
             <ul className={`${styles.menu} ${newStrMenu && styles.left}`} ref={menuRef}>
                 <p className={`${styles.handle} handle`}></p>
                 {
-                    menuItems.map((item) => (
-                        <li className={styles.item} key={item.name} onClick={() => changeNode(item.name)}>
-                            <img src={item.icon} className={styles.ico} alt="Иконка пункта меню" />
-                            <p className={styles.text}>{ item.text }</p>
-                        </li>
-                    ))
+                    menuItems.map((item) => {
+                        if (!(newStrMenu && item.name == 'delete')) {
+                            return (
+                                <li className={styles.item} key={item.name} onClick={() => changeNode(item.name)}>
+                                    <img src={item.icon} className={styles.ico} alt="Иконка пункта меню" />
+                                    <p className={styles.text}>{ item.text }</p>
+                                </li>
+                            )}
+                        }
+                    )
                 }
 
                 {

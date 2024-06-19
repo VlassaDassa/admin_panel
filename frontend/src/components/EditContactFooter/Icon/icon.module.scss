@@ -1,0 +1,38 @@
+@import './../../../assets/styles/variables';
+
+
+
+.icon {
+    display: flex;
+    flex-direction: column;
+
+    row-gap: 5px;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+
+    column-gap: 15px;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: $medium;
+}
+
+.ico {
+    height: 30px;
+}
+
+.btn {
+    font-size: 16px;
+    color: $accent-color;
+
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
